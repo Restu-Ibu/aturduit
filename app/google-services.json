@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "1017980932850",
+    "firebase_url": "https://my-firebase-1bdd0.firebaseio.com",
+    "project_id": "my-firebase-1bdd0",
+    "storage_bucket": "my-firebase-1bdd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017980932850:android:dfee4f7b69d6efdc",
+        "android_client_info": {
+          "package_name": "com.restuibu.aturduit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017980932850-8b3t7ta7k38d38865bl3g7g3jstajd00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdQZYCWQsoXHDNTKdXoaEbdUuj629WzEo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017980932850:android:285b85693f5d16b1",
+        "android_client_info": {
+          "package_name": "com.restuibu.kipang.tahsinhijaiyah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017980932850-8b3t7ta7k38d38865bl3g7g3jstajd00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdQZYCWQsoXHDNTKdXoaEbdUuj629WzEo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

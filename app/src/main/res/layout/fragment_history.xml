@@ -1,0 +1,124 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@color/white"
+    tools:context=".HistoryActivity" >
+
+    <TableRow
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5sp"
+        android:gravity="center_horizontal" >
+
+        <TextView
+            android:id="@+id/title1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0.5sp"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:paddingLeft="16sp"
+            android:text="@string/title1"
+            android:textColor="#777777"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/title2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0.5sp"
+            android:layout_marginRight="0.5sp"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/title2"
+            android:textColor="#777777"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0.5sp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="16sp"
+            android:text="@string/btn_search"
+            android:textColor="#777777"
+            android:textStyle="bold" />
+    </TableRow>
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:ems="10"
+        android:hint="@string/btn_search"
+        android:textColor="#333333"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="0sp"
+        android:layout_below="@+id/editText1"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#333333"
+        android:visibility="invisible" />
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textView1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="4dp" >
+    </ListView>
+
+    <TableRow
+        android:id="@+id/btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" >
+
+        <ImageButton
+            android:layout_marginLeft="1sp"
+            android:layout_marginBottom="1sp"
+            android:id="@+id/button1"
+            android:layout_width="fill_parent"
+            android:layout_height="50sp"
+            android:layout_marginRight="0.5sp"
+            android:layout_weight="1"
+            android:background="#33666666"
+            android:contentDescription="@string/image_desc"
+            android:src="@android:drawable/ic_menu_revert"
+            android:textColor="#333333" />
+
+        <ImageButton
+            android:id="@+id/button2"
+            android:layout_marginRight="1sp"
+            android:layout_marginBottom="1sp"
+            android:layout_marginLeft="0.5sp"
+            android:layout_width="fill_parent"
+            android:layout_height="50sp"
+
+            android:layout_weight="1"
+
+            android:contentDescription="@string/image_desc"
+            android:src="@android:drawable/ic_menu_search"
+            android:text="@string/btn_search"
+            android:background="#33666666"
+            android:textColor="#333333" />
+    </TableRow>
+
+</RelativeLayout>

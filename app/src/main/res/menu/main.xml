@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/budget"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/menu_budget"/>
+  
+    
+    <item
+        android:id="@+id/action_option"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/menu_restore"
+        android:icon="@drawable/menu_option"/>
+
+
+    <item
+        android:id="@+id/rate"
+        android:orderInCategory="100"
+        android:showAsAction="collapseActionView"
+        android:title="@string/menu_rate"/>
+    <item
+        android:id="@+id/ins"
+        android:orderInCategory="100"
+        android:showAsAction="collapseActionView"
+        android:title="@string/menu_install"/>
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:showAsAction="collapseActionView"
+        android:title="@string/action_about"/>
+
+</menu>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- indonesia -->
+
+    <string name="menu_budget">Budget</string>
+    <string name="menu_rate">Rate Aplikasi ini</string>
+    <string name="menu_install">Install Aplikasi Lainnya</string>
+    <string name="menu_backup">Backup Database</string>
+    <string name="menu_restore">Restore Database</string>
+    <string name="copyright">Copyright \u00a9 RestuIbu</string>
+    <string name="app_name">Atur Duit</string>
+    <string name="e_price">Harga</string>
+    <string name="e_desc">Deskripsi</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_reset">Reset</string>
+    <string name="Riwayat">Riwayat</string>
+    <string name="title_activity_detail_history">DetailHistoryActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="btn_back">Kembali</string>
+    <string name="btn_search">Cari</string>
+
+    <string name="title_activity_blank">Tidak tersedia</string>
+    <string name="title1">Tanggal</string>
+    <string name="time">Jam</string>
+    <string name="jam">Jam</string>
+
+    <string name="titikdua">:</string>
+    <string name="title2">Total</string>
+    <string name="title3">Transaksi</string>
+    <string name="splash">Splash</string>
+    <string name="RiwayatBudget">Riwayat Budget</string>
+    <string name="title_add">Masukkan transaksi Anda</string>
+    <string name="ID">ID</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="image_desc">Image Description</string>
+    <string name="action_about">Tentang</string>
+    <string name="sort_category">Berdasarkan kategori:</string>
+    <string name="Clock">Jam</string>
+    <string name="Date">Tanggal</string>
+    <string name="Price">Harga</string>
+    <string name="Simpan">Simpan</string>
+    <string name="Ulangi">Ulangi</string>
+
+    <string name="ATUR_DUIT_WIDGET">ATUR DUIT WIDGET</string>
+
+    <string name="Sisabudget">Sisa budget</string>
+    <string name="Mulai">Mulai</string>
+    <string name="Berakhir">Berakhir</string>
+
+    <string name="Description">Deskripsi</string>
+    <string name="infoimport1">Pastikan file database berada di folder root.\n\nMudahnya, file database harus berada di direktori saat pertama masuk ke File Explorer/Manager</string>
+    <string name="RestoreDatabase">Restore Database</string>
+
+    <string name="SetBudget">Set Budget</string>
+    <string name="AmountBudget">Masukkan Nominal</string>
+
+
+    <string name="TanggalMulai">Tanggal Mulai</string>
+    <string name="TanggalBerakhir">Tanggal Berakhir</string>
+    <string name="TotalBudget">Total Budget</string>
+
+    <string name="TambahAlarm">Tambah alarm</string>
+    <string name="Statistik">Statistik</string>
+    <string name="Tambah">Tambah</string>
+
+
+    <string name="menuBackup">Backup database secara:</string>
+    <string name="Online">Online</string>
+    <string name="Offline">Offline</string>
+    <string name="Total">Total</string>
+    <string name="TambahTransaksi">Tambah Transaksi</string>
+    <string name="Harga">Harga</string>
+    <string name="Deskripsi">Deskripsi</string>
+
+
+    <string name="banner_ad_unit_id">ca-app-pub-6657666130252014/7859784872</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-6657666130252014/8402680470</string>
+
+    <!-- activity_about -->
+    <string name="about">Restu Ibu rilis aplikasi lagi nih, namanya Atur Duit (remake dari Cost Tracker).
+Sesuai dengan namanya tujuan aplikasi ini yaitu untuk membantu kita mengatur pengeluaran yang dilakukan.\n
+Fitur yang dimiliki adalah\n\n
+1. Menambah/mengubah/menghapus transaksi yang dilakukan baik transaksi yang dilakukan sebelumnya, sekarang, maupun yang akan datang.\n
+2. Menampilkan riwayat transaksi yang telah dilakukan.\n
+3. Menampilkan riwayat budget yang telah dilakukan.\n
+4. Menampilkan grafik pengeluaran berdasarkan harian, bulanan, dan tahunan.\n
+5. Mengatur jumlah anggaran/budget berdasarkan mingguan dan bulanan.\n
+6. Widget sisa budget bisa di home/lockscreen\n\n
+email: emirkipang@gmail.com\n
+Copyright @RestuIbu\n\n
+Donasi ke Rekening BNI\n
+0210542740\n an EMIR SEPTI ANSORI D\n\nSemoga aplikasi ini bermanfaat :))
+    </string>
+
+    <!-- alertdialog_add_timer.xml -->
+    <string name="Oke">Oke</string>
+    <string name="Batal">Batal</string>
+
+    <string name="IncreaseBudget">Penambahan</string>
+    <string name="DecreaseBudget">Pengurangan</string>
+
+    <!-- alertdialog_deleteedit.xml -->
+    <string name="Edit">Ubah</string>
+    <string name="Delete">Hapus</string>
+
+    <!-- activity_history_and_statistic_budget -->
+    <string name="TglMulai">Tgl Mulai</string>
+    <string name="TglAkhir">Tgl Akhir</string>
+    <string name="Kategori">Kategori</string>
+    <string name="Sisa">Sisa</string>
+
+
+    <string-array name="category_array">
+        <item>Pilih kategori:</item>
+        <item>Mingguan</item>
+        <item>Bulanan</item>
+    </string-array>
+    <string-array name="statistic_array">
+        <item>Pilih waktu:</item>
+        <item>Harian</item>
+        <item>Bulanan</item>
+        <item>Tahunan</item>
+    </string-array>
+    <string-array name="option_chart_array">
+        <item>Pilih chart:</item>
+        <item>Bar Chart</item>
+        <item>Line Chart</item>
+    </string-array>
+    <string-array name="budget_array">
+        <item>Pilih kategori:</item>
+        <item>Mingguan</item>
+        <item>Bulanan</item>
+        <item>Mingguan dan bulanan</item>
+    </string-array>
+    <string-array name="editBudget_array">
+        <item>Pilih yang akan diubah:</item>
+        <item>Total Budget</item>
+        <item>Sisa Budget</item>
+        <item>Keduanya</item>
+    </string-array>
+
+    <string name="title_activity_history_and_statistic_budget">HistoryAndStatisticBudgetActivity</string>
+    <string name="title_activity_about">AboutActivity</string>
+
+</resources>
