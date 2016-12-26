@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -310,6 +311,13 @@ public class MainActivity extends Activity {
         tvTotal.setText(Util.formatUang(budget.getAmount()));
         tvSisa.setText(Util.formatUang(budget.getLeft()));
 
+        if(Long.parseLong(budget.getLeft()) < 0){
+            tvSisa.setTextColor(Color.parseColor("#FF0000"));
+            tvSisa.setText(Util.formatUang(budget.getLeft()));
+        }
+        else
+            tvSisa.setText(Util.formatUang(budget.getLeft()));
+
         //CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(MainActivity.this, R.array.editBudget_array);
 
         ArrayAdapter<CharSequence> adapter = createFromResource(
@@ -408,7 +416,13 @@ public class MainActivity extends Activity {
                 new SimpleDateFormat("dd/MM/yy kk:mm:ss")));
         tCategory.setText(budget.getCategory());
         tAmount.setText(Util.formatUang(budget.getAmount()));
-        tLeft.setText(Util.formatUang(budget.getLeft()));
+
+        if(Long.parseLong(budget.getLeft()) < 0){
+            tLeft.setTextColor(Color.parseColor("#FF0000"));
+            tLeft.setText(Util.formatUang(budget.getLeft()));
+        }
+        else
+            tLeft.setText(Util.formatUang(budget.getLeft()));
 
         bReset.setOnClickListener(new OnClickListener() {
 

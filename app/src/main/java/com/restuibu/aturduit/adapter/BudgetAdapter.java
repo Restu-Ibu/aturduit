@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.Util;
+
+import static com.restuibu.aturduit.R.id.budget;
 
 public class BudgetAdapter extends ArrayAdapter<Budget> implements Filterable {
 
@@ -71,7 +74,14 @@ public class BudgetAdapter extends ArrayAdapter<Budget> implements Filterable {
 		tTglAkhir.setText(itemsArrayList.get(position).getEndDate());
 		tKategori.setText((itemsArrayList.get(position).getCategory()));
 		tAmount.setText(Util.formatUang(itemsArrayList.get(position).getAmount()));
-		tLeft.setText(Util.formatUang(itemsArrayList.get(position).getLeft()));
+
+		if(Long.parseLong(itemsArrayList.get(position).getLeft()) < 0){
+			tLeft.setTextColor(Color.parseColor("#FF0000"));
+			tLeft.setText(Util.formatUang(itemsArrayList.get(position).getLeft()));
+		}
+		else
+			tLeft.setText(Util.formatUang(itemsArrayList.get(position).getLeft()));
+
 		
 
 		return rowView;
