@@ -200,7 +200,7 @@ public class MainActivity extends Activity {
         Button bSet = (Button) dialogview.findViewById(R.id.button1);
         Button bCancel = (Button) dialogview.findViewById(R.id.button2);
 
-        final Spinner spinner = (Spinner) dialogview.findViewById(R.id.spinner1);
+        final Spinner spinner = (Spinner) dialogview.findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = createFromResource(
                 MainActivity.this, R.array.category_array,
                 android.R.layout.simple_spinner_item);
