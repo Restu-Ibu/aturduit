@@ -4,6 +4,8 @@ import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
+import java.util.Calendar;
+
 /**
  * Created by philipp on 02/06/16.
  */
@@ -30,7 +32,7 @@ public class DayAxisValueFormatter implements IAxisValueFormatter {
         String yearName = String.valueOf(year);
 
 
-        int dayOfMonth = determineDayOfMonth(days, month + 12 * (year - 2016));
+        int dayOfMonth = determineDayOfMonth(days, month );
 
         String appendix = "th";
 
@@ -116,17 +118,32 @@ public class DayAxisValueFormatter implements IAxisValueFormatter {
     }
 
     private int determineYear(int days) {
+        int x = Calendar.getInstance().get(Calendar.YEAR);
+
+        if (x == 2017){
+            days = days + 366;
+        } else if(x == 2018){
+            days = days + 366 + 365;
+        } else if(x == 2019){
+            days = days + 366 + 365 + 365;
+        } else if(x == 2020){
+            days = days + 366 + 365 + 365 + 365;
+        } else if(x == 2021){
+            days = days + 366 + 365 + 365 + 365 + 366;
+        }
 
         if (days <= 366)
             return 2016;
-        else if (days <= 730)
+        else if (days <= 731)
             return 2017;
-        else if (days <= 1094)
+        else if (days <= 1096)
             return 2018;
-        else if (days <= 1458)
+        else if (days <= 1461)
             return 2019;
-        else
+        else if (days <= 1827)
             return 2020;
+        else
+            return 2021;
 
     }
 }

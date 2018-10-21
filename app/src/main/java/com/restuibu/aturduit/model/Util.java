@@ -44,6 +44,11 @@ public class Util {
 	public static int getDayOfYear(String datestr){
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         int CurrentDayOfYear = 0;
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        int multipier = currentYear - 2016;
+
+
         try {
             Date date = format.parse(datestr);
             Calendar localCalendar = Calendar.getInstance();
@@ -56,7 +61,7 @@ public class Util {
 
 
 
-		return CurrentDayOfYear-1;
+		return CurrentDayOfYear;
 	}
 
 	public static void loadInterstitial(Context c) {
@@ -243,7 +248,7 @@ public class Util {
 					break;
 				case 2:
 					//Util.alertTimer(c);
-					currency = "$";
+					//currency = "Rp";
 					Toast.makeText(c, "Coming soon", Toast.LENGTH_SHORT).show();
 					break;
 				case 3:

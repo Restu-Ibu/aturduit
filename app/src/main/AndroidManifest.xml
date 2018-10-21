@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.restuibu.aturduit"
-    android:versionCode="20"
+    android:versionCode="21"
     android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="23" />
+
     <!-- Include required permissions for Google Mobile Ads to run -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -23,8 +21,8 @@
 
         <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6657666130252014~6383051675"/>
 
         <activity
             android:name="com.restuibu.aturduit.MainActivity"

@@ -17,6 +17,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -259,7 +260,7 @@ public class StatisticFragment extends Fragment implements OnChartValueSelectedL
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         //xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(3);
+        xAxis.setLabelCount(1);
         xAxis.setValueFormatter(AxisValueFormatter);
 
         IAxisValueFormatter custom = new MyAxisValueFormatter();
@@ -310,12 +311,13 @@ public class StatisticFragment extends Fragment implements OnChartValueSelectedL
             } else if (flag.equals("monthly")) {
                 String[] x = histories.get(i).getTanggal().split("/");
                 String y = x[1] + x[0];
+//                Toast.makeText(getActivity(), y, Toast.LENGTH_SHORT).show();
                 float z = Float.parseFloat(y);
 
                 yVals1.add(new BarEntry(z, val));
             } else if (flag.equals("yearly")) {
                 float z = Float.parseFloat(histories.get(i).getTanggal());
-
+//                Toast.makeText(getActivity(), Float.toString(z), Toast.LENGTH_SHORT).show();
                 yVals1.add(new BarEntry(z, val));
             }
 
@@ -373,7 +375,7 @@ public class StatisticFragment extends Fragment implements OnChartValueSelectedL
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         //xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(3);
+        xAxis.setLabelCount(1);
         xAxis.setValueFormatter(AxisValueFormatter);
 
         IAxisValueFormatter custom = new MyAxisValueFormatter();

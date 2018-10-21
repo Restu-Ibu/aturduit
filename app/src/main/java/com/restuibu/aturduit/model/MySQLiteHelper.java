@@ -417,7 +417,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // 1. build the query
         // String query = "select * from tbl_friendlist";
 
-        String query = "select distinct substr(tanggal,4) tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by time asc";
+        String query = "select substr(tanggal,4) tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY substr(tanggal,4)  order by time asc";
         // String query =
         // "select distinct strftime('%d-%m-%Y', tanggal / 1000, 'unixepoch') tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by tanggal asc";
         // 2. get reference to writable DB
@@ -442,7 +442,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         ArrayList<History> history = new ArrayList<History>();
         // 1. build the query
         // String query = "select * from tbl_friendlist";
-        String query = "select distinct substr(tanggal,7,4) tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by time asc";
+        String query = "select substr(tanggal,7,4) tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY substr(tanggal,7,4) order by time asc";
         // String query =
         // "select distinct strftime('%d-%m-%Y', tanggal / 1000, 'unixepoch') tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by tanggal asc";
         // 2. get reference to writable DB
