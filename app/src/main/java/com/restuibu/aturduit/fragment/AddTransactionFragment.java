@@ -1,4 +1,4 @@
-package com.restuibu.aturduit;
+package com.restuibu.aturduit.fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,9 +20,12 @@ import android.widget.TimePicker;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.restuibu.aturduit.R;
+import com.restuibu.aturduit.activity.MainActivity;
+import com.restuibu.aturduit.activity.SplashActivity;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.Transaksi;
-import com.restuibu.aturduit.model.Util;
+import com.restuibu.aturduit.util.Util;
 
 public class AddTransactionFragment extends Fragment {
 	private EditText ePrice, eDesc;
@@ -97,6 +100,7 @@ public class AddTransactionFragment extends Fragment {
 		bDatePicker.setText(new SimpleDateFormat("dd/MM/yyyy")
 				.format(new Date()));
 
+		ePrice.addTextChangedListener(Util.onTextChangedListener(ePrice));
 		// tTimePicker.getCurrentMinute();
 		bTimePicker.setOnClickListener(new View.OnClickListener() {
 
@@ -286,6 +290,8 @@ public class AddTransactionFragment extends Fragment {
 				value_text = true;
 				value_number = true;
 
+				String ePrice_ = ePrice.getText().toString().replaceAll("\\W", "");
+
 				if ((ePrice.getText().length() == 0)) {
 					ePrice.setError("Must be fill.");
 					null_ePrice = true;
@@ -301,7 +307,7 @@ public class AddTransactionFragment extends Fragment {
 						eDesc.setError("Accept Alphabets Only.");
 						value_text = false;
 					}
-					if (!ePrice.getText().toString().matches("[0123456789]+")) {
+					if (!ePrice_.matches("[0123456789]+")) {
 						ePrice.setError("Accept Numeric Only.");
 						value_number = false;
 					}
@@ -311,7 +317,7 @@ public class AddTransactionFragment extends Fragment {
 						Date dt = new Date();
 
 						Transaksi trans = new Transaksi(0, eDesc.getText()
-								.toString(), ePrice.getText().toString(),
+								.toString(), ePrice_,
 								bTimePicker.getText().toString(), bDatePicker
 										.getText().toString(), dt.getTime());
 						helper.addTransaksi(trans);
@@ -320,7 +326,7 @@ public class AddTransactionFragment extends Fragment {
 								.toString()
 								+ " "
 								+ bTimePicker.getText().toString(),
-								Long.parseLong(ePrice.getText().toString())
+								Long.parseLong(ePrice_)
 										* (-1));
 
 						ePrice.setText("");

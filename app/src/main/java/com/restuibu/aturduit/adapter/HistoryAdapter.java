@@ -17,12 +17,12 @@ import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.restuibu.aturduit.HistoryFragment;
+import com.restuibu.aturduit.fragment.HistoryFragment;
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.model.History;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.Transaksi;
-import com.restuibu.aturduit.model.Util;
+import com.restuibu.aturduit.util.Util;
 
 public class HistoryAdapter extends ArrayAdapter<History> implements Filterable {
 

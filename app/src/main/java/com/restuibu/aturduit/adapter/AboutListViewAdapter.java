@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.model.About;
-import com.restuibu.aturduit.model.Util;
+import com.restuibu.aturduit.util.Util;
 
 import java.util.ArrayList;
 

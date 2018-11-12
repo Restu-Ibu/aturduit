@@ -1,4 +1,4 @@
-package com.restuibu.aturduit;
+package com.restuibu.aturduit.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -12,13 +12,11 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,10 +26,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.restuibu.aturduit.fragment.AddTransactionFragment;
+import com.restuibu.aturduit.fragment.HistoryFragment;
+import com.restuibu.aturduit.R;
+import com.restuibu.aturduit.fragment.StatisticFragment;
 import com.restuibu.aturduit.adapter.TabListener;
 import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
-import com.restuibu.aturduit.model.Util;
+import com.restuibu.aturduit.util.Util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,8 +42,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.widget.ArrayAdapter.createFromResource;
-import static com.restuibu.aturduit.R.id.spinner;
-import static com.restuibu.aturduit.R.id.spinner2;
 
 public class MainActivity extends Activity {
     private ActionBar.Tab AddTransactionFragmentTab, HistoryFragmentTab,
@@ -201,6 +201,8 @@ public class MainActivity extends Activity {
         Button bSet = (Button) dialogview.findViewById(R.id.button1);
         Button bCancel = (Button) dialogview.findViewById(R.id.button2);
 
+        eSetBudget.addTextChangedListener(Util.onTextChangedListener(eSetBudget));
+
         final Spinner spinner = (Spinner) dialogview.findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = createFromResource(
                 MainActivity.this, R.array.category_array,
@@ -262,9 +264,9 @@ public class MainActivity extends Activity {
                                 (new SimpleDateFormat("dd/MM/yyyy"))
                                         .format(endDate), spinner
                                 .getSelectedItem().toString(),
-                                eSetBudget.getText().toString(), eSetBudget
-                                .getText().toString(), startDate
-                                .getTime(), endDate.getTime());
+                                eSetBudget.getText().toString().replaceAll("\\W", ""),
+                                eSetBudget.getText().toString().replaceAll("\\W", ""),
+                                startDate.getTime(), endDate.getTime());
 
                         helper.addBudget(budget);
 
@@ -308,6 +310,7 @@ public class MainActivity extends Activity {
         Button bIncrease = (Button) dialogview.findViewById(R.id.button1);
         Button bDecrease = (Button) dialogview.findViewById(R.id.button2);
 
+        etAmount.addTextChangedListener(Util.onTextChangedListener(etAmount));
         tvTotal.setText(Util.formatUang(budget.getAmount()));
         tvSisa.setText(Util.formatUang(budget.getLeft()));
 
@@ -335,20 +338,20 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "Tentukan kategori Budget yang akan diubah", Toast.LENGTH_LONG).show();
                 } else if (sKategori.getSelectedItem().toString()
                         .equals("Total Budget")) {
-                    helper.updateBudgetTotalSum(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString()));
+                    helper.updateBudgetTotalSum(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")));
                     Toast.makeText(MainActivity.this, "Total Budget telah diubah", Toast.LENGTH_LONG).show();
                     alert.dismiss();
                 } else if (sKategori.getSelectedItem().toString()
                         .equals("Sisa Budget")) {
-                    if ((Long.parseLong(budget.getLeft()) + Long.parseLong(etAmount.getText().toString()) > Long.parseLong(budget.getAmount()))) {
+                    if ((Long.parseLong(budget.getLeft()) + Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")) > Long.parseLong(budget.getAmount()))) {
                         Toast.makeText(MainActivity.this, "Sisa Budget tidak boleh melebihi Total Budget", Toast.LENGTH_LONG).show();
                     } else {
-                        helper.updateBudgetSum(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString()));
+                        helper.updateBudgetSum(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")));
                         Toast.makeText(MainActivity.this, "Sisa Budget telah diubah", Toast.LENGTH_LONG).show();
                         alert.dismiss();
                     }
                 } else {
-                    helper.updateBudgetBothSum(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString()));
+                    helper.updateBudgetBothSum(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")));
                     Toast.makeText(MainActivity.this, "Total Budget dan sisa Budget telah diubah", Toast.LENGTH_LONG).show();
                     alert.dismiss();
                 }
@@ -363,20 +366,20 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "Tentukan kategori Budget yang akan diubah", Toast.LENGTH_LONG).show();
                 } else if (sKategori.getSelectedItem().toString()
                         .equals("Total Budget")) {
-                    if ((Long.parseLong(budget.getAmount()) - Long.parseLong(etAmount.getText().toString()) < Long.parseLong(budget.getLeft()))) {
+                    if ((Long.parseLong(budget.getAmount()) - Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")) < Long.parseLong(budget.getLeft()))) {
                         Toast.makeText(MainActivity.this, "Total Budget tidak boleh kurang dari sisa Budget", Toast.LENGTH_LONG).show();
                     } else {
-                        helper.updateBudgetTotalDifference(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString()));
+                        helper.updateBudgetTotalDifference(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")));
                         Toast.makeText(MainActivity.this, "Total Budget telah diubah", Toast.LENGTH_LONG).show();
                         alert.dismiss();
                     }
                 } else if (sKategori.getSelectedItem().toString()
                         .equals("Sisa Budget")) {
-                    helper.updateBudgetDifference(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString()));
+                    helper.updateBudgetDifference(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")));
                     Toast.makeText(MainActivity.this, "Sisa Budget telah diubah", Toast.LENGTH_LONG).show();
                     alert.dismiss();
                 } else {
-                    helper.updateBudgetBothDifference(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString()));
+                    helper.updateBudgetBothDifference(budget.getIdBudget(), Long.parseLong(etAmount.getText().toString().replaceAll("\\W", "")));
                     Toast.makeText(MainActivity.this, "Total Budget dan sisa Budget telah diubah", Toast.LENGTH_LONG).show();
                     alert.dismiss();
                 }
@@ -416,6 +419,8 @@ public class MainActivity extends Activity {
                 new SimpleDateFormat("dd/MM/yy kk:mm:ss")));
         tCategory.setText(budget.getCategory());
         tAmount.setText(Util.formatUang(budget.getAmount()));
+
+        //Toast.makeText(this, budget.getAmount(), Toast.LENGTH_SHORT).show();
 
         if(Long.parseLong(budget.getLeft()) < 0){
             tLeft.setTextColor(Color.parseColor("#FF0000"));

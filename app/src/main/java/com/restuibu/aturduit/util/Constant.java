@@ -1,4 +1,4 @@
-package com.restuibu.aturduit.model;
+package com.restuibu.aturduit.util;
 
 import com.restuibu.aturduit.R;
 

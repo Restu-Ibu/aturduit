@@ -46,7 +46,7 @@
             android:background="@drawable/edit_text_custom"
             android:ems="10"
             android:hint="@string/Deskripsi"
-            android:inputType="text"
+            android:inputType="textCapWords|textCapSentences"
             android:maxLines="1"
             android:textColor="#333333" />
 

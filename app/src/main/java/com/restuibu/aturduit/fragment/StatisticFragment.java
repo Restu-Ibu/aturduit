@@ -1,4 +1,4 @@
-package com.restuibu.aturduit;
+package com.restuibu.aturduit.fragment;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -38,6 +37,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.custom.DayAxisValueFormatter;
 import com.restuibu.aturduit.custom.MonthAxisValueFormatter;
 import com.restuibu.aturduit.custom.MyAxisValueFormatter;
@@ -47,7 +47,7 @@ import com.restuibu.aturduit.custom.YearAxisValueFormatter;
 import com.restuibu.aturduit.model.History;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 
-import static com.restuibu.aturduit.model.Util.getDayOfYear;
+import static com.restuibu.aturduit.util.Util.getDayOfYear;
 
 public class StatisticFragment extends Fragment implements OnChartValueSelectedListener {
     private MySQLiteHelper helper;

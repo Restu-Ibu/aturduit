@@ -23,11 +23,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.restuibu.aturduit.HistoryFragment;
+import com.restuibu.aturduit.fragment.HistoryFragment;
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.Transaksi;
-import com.restuibu.aturduit.model.Util;
+import com.restuibu.aturduit.util.Util;
 
 public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 		Filterable {
@@ -92,6 +92,7 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
 				alert.setView(dialogview);
+				alert.setTitle("Detil Transaksi");
 
 				TextView idTransaksi = (TextView) dialogview
 						.findViewById(R.id.textView11);

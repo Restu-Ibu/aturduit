@@ -11,8 +11,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
+import com.restuibu.aturduit.activity.MainActivity;
 import com.restuibu.aturduit.model.MySQLiteHelper;
-import com.restuibu.aturduit.model.Util;
+import com.restuibu.aturduit.util.Util;
 
 public class MyWidgetProvider extends AppWidgetProvider {
 	// private static final String ACTION_CLICK = "ACTION_CLICK";

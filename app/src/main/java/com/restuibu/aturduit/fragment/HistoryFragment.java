@@ -1,4 +1,4 @@
-package com.restuibu.aturduit;
+package com.restuibu.aturduit.fragment;
 
 import java.util.ArrayList;
 
@@ -15,9 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.adapter.HistoryAdapter;
 import com.restuibu.aturduit.adapter.TransaksiAdapter;
 import com.restuibu.aturduit.model.History;

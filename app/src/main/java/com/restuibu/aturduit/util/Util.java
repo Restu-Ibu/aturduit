@@ -1,13 +1,16 @@
-package com.restuibu.aturduit.model;
+package com.restuibu.aturduit.util;
 
+import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
@@ -15,6 +18,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RemoteViews;
@@ -31,17 +37,19 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.restuibu.aturduit.AddTransactionFragment;
-import com.restuibu.aturduit.MainActivity;
+import com.restuibu.aturduit.fragment.AddTransactionFragment;
+import com.restuibu.aturduit.activity.MainActivity;
 import com.restuibu.aturduit.MyWidgetProvider;
 import com.restuibu.aturduit.R;
-import com.restuibu.aturduit.SplashActivity;
+import com.restuibu.aturduit.activity.SplashActivity;
 import com.restuibu.aturduit.adapter.OptionAdapter;
+import com.restuibu.aturduit.model.About;
+import com.restuibu.aturduit.model.Alarm;
+import com.restuibu.aturduit.model.Budget;
+import com.restuibu.aturduit.model.MySQLiteHelper;
+import com.restuibu.aturduit.model.OptionItem;
 
 public class Util {
-    public static String currency = "Rp";
-
-
     public static ArrayList<About> getAllAbout() {
         ArrayList<About> list = new ArrayList<>();
         int max = 0;
@@ -244,10 +252,10 @@ public class Util {
         GridView grid = (GridView) dialogview.findViewById(R.id.gridView1);
 
         ArrayList<OptionItem> options = new ArrayList<OptionItem>();
-        options.add(new OptionItem("Restore Database", R.drawable.ic_launcher));
-        options.add(new OptionItem("Backup Database", R.drawable.ic_launcher));
-        options.add(new OptionItem("Currency", R.drawable.ic_launcher));
-        options.add(new OptionItem("Reset Database", R.drawable.ic_launcher));
+        options.add(new OptionItem("Restore Database", R.mipmap.ic_restore));
+        options.add(new OptionItem("Backup Database", R.mipmap.ic_backup));
+        options.add(new OptionItem("Reminder", R.mipmap.ic_reminder));
+        options.add(new OptionItem("Reset Database", R.mipmap.ic_reset));
         OptionAdapter adapter = new OptionAdapter(c, options);
 
         grid.setAdapter(adapter);
@@ -330,20 +338,11 @@ public class Util {
     }
 
     public static String formatUang(String nominal) {
-        char c[] = nominal.toCharArray();
-        String hasil = "";
-        int i = c.length - 1;
-        int three_char = 0;
-        while (i >= 0) {
-            hasil = c[i] + hasil;
-            three_char++;
-            if (three_char == 3) {
-                hasil = "." + hasil;
-                three_char = 0;
-            }
-            i--;
-        }
-        return currency + hasil;
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat format = NumberFormat.getCurrencyInstance(localeID);
+        String currency = format.format(Double.parseDouble(nominal));
+
+        return currency;
     }
 
     public static void refreshTimePickerAtAddTransactionFragment() {
@@ -470,5 +469,46 @@ public class Util {
         Intent i = new Intent(c, MainActivity.class);
         c.startActivity(i);
 
+    }
+
+    public static TextWatcher onTextChangedListener(final EditText editText) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                editText.removeTextChangedListener(this);
+
+                try {
+                    String originalString = s.toString();
+
+                    Long longval;
+                    if (originalString.contains(",")) {
+                        originalString = originalString.replaceAll(",", "");
+                    }
+                    longval = Long.parseLong(originalString);
+
+                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                    formatter.applyPattern("#,###,###,###");
+                    String formattedString = formatter.format(longval);
+
+                    //setting text after format to EditText
+                    editText.setText(formattedString);
+                    editText.setSelection(editText.getText().length());
+                } catch (NumberFormatException nfe) {
+                    nfe.printStackTrace();
+                }
+
+                editText.addTextChangedListener(this);
+            }
+        };
     }
 }

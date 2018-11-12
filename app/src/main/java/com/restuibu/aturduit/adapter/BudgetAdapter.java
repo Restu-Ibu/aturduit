@@ -15,9 +15,7 @@ import android.widget.TextView;
 
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.model.Budget;
-import com.restuibu.aturduit.model.Util;
-
-import static com.restuibu.aturduit.R.id.budget;
+import com.restuibu.aturduit.util.Util;
 
 public class BudgetAdapter extends ArrayAdapter<Budget> implements Filterable {
 

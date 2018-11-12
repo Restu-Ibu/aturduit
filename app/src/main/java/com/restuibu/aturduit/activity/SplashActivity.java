@@ -1,4 +1,4 @@
-package com.restuibu.aturduit;
+package com.restuibu.aturduit.activity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Window;
 
 import com.google.android.gms.ads.InterstitialAd;
+import com.restuibu.aturduit.R;
 
 public class SplashActivity extends Activity {
 	public static InterstitialAd mInterstitialAd;

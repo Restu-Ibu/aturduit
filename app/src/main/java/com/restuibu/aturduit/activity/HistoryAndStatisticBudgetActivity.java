@@ -1,4 +1,4 @@
-package com.restuibu.aturduit;
+package com.restuibu.aturduit.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.adapter.BudgetAdapter;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 

@@ -25,13 +25,13 @@
             android:value="ca-app-pub-6657666130252014~6383051675"/>
 
         <activity
-            android:name="com.restuibu.aturduit.MainActivity"
+            android:name="com.restuibu.aturduit.activity.MainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.restuibu.aturduit.HistoryAndStatisticBudgetActivity"
+            android:name="com.restuibu.aturduit.activity.HistoryAndStatisticBudgetActivity"
             android:label="@string/title_activity_history_and_statistic_budget"
-            android:parentActivityName="com.restuibu.aturduit.MainActivity"
+            android:parentActivityName="com.restuibu.aturduit.activity.MainActivity"
             android:screenOrientation="landscape" >
         </activity>
 
@@ -46,7 +46,7 @@
         </receiver>
 
         <activity
-            android:name="com.restuibu.aturduit.SplashActivity"
+            android:name="com.restuibu.aturduit.activity.SplashActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,9 +55,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.restuibu.aturduit.AboutActivity"
+            android:name="com.restuibu.aturduit.activity.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName="com.restuibu.aturduit.MainActivity" >
+            android:parentActivityName="com.restuibu.aturduit.activity.MainActivity" >
         </activity>
 
         <!-- Include the AdActivity configChanges and theme. -->

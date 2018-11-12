@@ -1,9 +1,10 @@
-package com.restuibu.aturduit;
+package com.restuibu.aturduit.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.adapter.AboutListViewAdapter;
 
 public class AboutActivity extends Activity {
