@@ -31,4 +31,10 @@
         android:showAsAction="collapseActionView"
         android:title="@string/action_about"/>
 
+    <item
+        android:id="@+id/action_signout"
+        android:orderInCategory="100"
+        android:showAsAction="collapseActionView"
+        android:title="@string/action_signout"/>
+
 </menu>

@@ -34,7 +34,8 @@ public class SplashActivity extends Activity {
 			public void run() {
 
 				// go to the main activity
-				Intent i = new Intent(SplashActivity.this, MainActivity.class);
+				//Intent i = new Intent(SplashActivity.this, MainActivity.class);
+				Intent i = new Intent(SplashActivity.this, GoogleSignInActivity.class);
 				startActivity(i);
 
 				SplashActivity.this.finish();

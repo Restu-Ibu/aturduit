@@ -24,6 +24,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6657666130252014~6383051675"/>
 
+        <activity android:name=".activity.GoogleSignInActivity"></activity>
         <activity
             android:name="com.restuibu.aturduit.activity.MainActivity"
             android:label="@string/app_name" >

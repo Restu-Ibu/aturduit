@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1017980932850-umd80tistkn3msfr6l8scbl49kh9s0hg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.restuibu.aturduit",
+            "certificate_hash": "c82a3a6f16cbb095c681c1171cc391a797986f9b"
+          }
+        },
+        {
           "client_id": "1017980932850-8b3t7ta7k38d38865bl3g7g3jstajd00.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -35,7 +43,53 @@
         "ads_service": {
           "status": 2
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-6657666130252014~6383051675"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017980932850:android:6c56a4ff24b0f308",
+        "android_client_info": {
+          "package_name": "com.restuibu.emir.mtttahsin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017980932850-8qvuf2anan49cm5sdhgn9sg3e2oh1n9l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.restuibu.emir.mtttahsin",
+            "certificate_hash": "2e653e7afcf7745b4a3ad10d3b69d56bc51855f6"
+          }
+        },
+        {
+          "client_id": "1017980932850-8b3t7ta7k38d38865bl3g7g3jstajd00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdQZYCWQsoXHDNTKdXoaEbdUuj629WzEo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1017980932850-4829oogi9t6hp9u816b7ejj9pn1eb647.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-6657666130252014~7471485747"
     },
     {
       "client_info": {
@@ -45,6 +99,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1017980932850-8tcutpq9nsadr6gp6md0khodghibcrrf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.restuibu.kipang.tahsinhijaiyah",
+            "certificate_hash": "cf8c027a7e792c8a838d9e419fc0903b3ce93b51"
+          }
+        },
         {
           "client_id": "1017980932850-8b3t7ta7k38d38865bl3g7g3jstajd00.apps.googleusercontent.com",
           "client_type": 3
@@ -62,6 +124,59 @@
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-6657666130252014~6811540475"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017980932850:android:0b0add74ada8e163",
+        "android_client_info": {
+          "package_name": "com.restuibu.myfirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017980932850-h9jchgld5jide12tskh258blec1ttq82.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.restuibu.myfirebase",
+            "certificate_hash": "c82a3a6f16cbb095c681c1171cc391a797986f9b"
+          }
+        },
+        {
+          "client_id": "1017980932850-3tkt7v2t38sbhg21ovcb1bbpc8fh5nae.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.restuibu.myfirebase",
+            "certificate_hash": "68b4e2bc6c109fca76b09458baf7881de1289abb"
+          }
+        },
+        {
+          "client_id": "1017980932850-8b3t7ta7k38d38865bl3g7g3jstajd00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdQZYCWQsoXHDNTKdXoaEbdUuj629WzEo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1017980932850-4829oogi9t6hp9u816b7ejj9pn1eb647.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

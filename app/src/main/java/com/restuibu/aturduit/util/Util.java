@@ -12,12 +12,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -37,6 +43,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.restuibu.aturduit.activity.GoogleSignInActivity;
+import com.restuibu.aturduit.activity.HistoryAndStatisticBudgetActivity;
 import com.restuibu.aturduit.fragment.AddTransactionFragment;
 import com.restuibu.aturduit.activity.MainActivity;
 import com.restuibu.aturduit.MyWidgetProvider;
@@ -50,6 +62,46 @@ import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.OptionItem;
 
 public class Util {
+    private static ProgressDialog pd;
+
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    public static FirebaseAuth mAuth;
+    public static GoogleSignInClient mGoogleSignInClient;
+
+    public static void signOut(final Activity activity) {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(activity,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Intent i = new Intent(activity, GoogleSignInActivity.class);
+                        activity.startActivity(i);
+                    }
+                });
+    }
+
+
+
+    public static void showProgress(Context c, String msg){
+        pd = new ProgressDialog(c);
+        pd.setMessage(msg);
+        pd.show();
+    }
+
+    public static void stopProgress(){
+        if(pd.isShowing())
+            pd.dismiss();
+    }
+
     public static ArrayList<About> getAllAbout() {
         ArrayList<About> list = new ArrayList<>();
         int max = 0;
@@ -100,6 +152,8 @@ public class Util {
         AdRequest adRequest = new AdRequest.Builder().build();
         SplashActivity.mInterstitialAd.loadAd(adRequest);
     }
+
+
 
     public static void alertInfoBackup(final Context c) {
 
@@ -250,6 +304,7 @@ public class Util {
         final AlertDialog alert = new AlertDialog.Builder(c).create();
 
         GridView grid = (GridView) dialogview.findViewById(R.id.gridView1);
+        alert.setTitle("Menu");
 
         ArrayList<OptionItem> options = new ArrayList<OptionItem>();
         options.add(new OptionItem("Restore Database", R.mipmap.ic_restore));
@@ -268,11 +323,10 @@ public class Util {
                 // TODO Auto-generated method stub
                 switch (arg2) {
                     case 0:
-                        Util.alertInfoBackup(c);
-
+                        MySQLiteHelper.importDB(c);
                         break;
                     case 1:
-                        MySQLiteHelper.exportDB(c);
+                        MySQLiteHelper.exportDB(c, 1);
                         break;
                     case 2:
                         //Util.alertTimer(c);
@@ -511,4 +565,29 @@ public class Util {
             }
         };
     }
+
+
+   /**
+     * Checks if the app has permission to write to device storage
+     *
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     */
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
+
+
 }

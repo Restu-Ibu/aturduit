@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.restuibu.aturduit"
@@ -28,7 +28,11 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-ads:9.4.0'
+
+    // [START gradle_play_config]
+    implementation 'com.google.firebase:firebase-ads:15.0.1'
+    // [END gradle_play_config]
+    implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation files('libs/achartengine-1.0.0.jar')
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     implementation 'io.realm:realm-android:0.87.5'
@@ -36,8 +40,20 @@ dependencies {
     // Stetho core
     implementation 'com.facebook.stetho:stetho:1.3.1'
 
-    //Optional network helper
-    implementation 'com.facebook.stetho:stetho-okhttp:1.3.1'
+    // Firebase Authentication
+    implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'com.google.firebase:firebase-auth:16.0.3'
+
+    // Firebase storage
+    implementation 'com.google.firebase:firebase-storage:16.0.2'
+
+    // Google Sign In SDK (only required for Google Sign In)
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.android.gms:play-services-ads:16.0.0'
+
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

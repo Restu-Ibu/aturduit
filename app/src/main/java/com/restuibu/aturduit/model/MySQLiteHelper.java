@@ -5,13 +5,24 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.restuibu.aturduit.activity.MainActivity;
 import com.restuibu.aturduit.util.Util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -19,20 +30,39 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.restuibu.aturduit.util.Util.mAuth;
+
 public class MySQLiteHelper extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;
     // Database Name
-    private static final String DATABASE_NAME = "costtracker";
+    public static final String DATABASE_NAME = "costtracker";
     public static final String TBL_TRANSAKSI = "tbl_transaksi";
     public static final String TBL_BUDGET = "tbl_budget";
     public static final String TBL_ALARM = "tbl_alarm";
 
     private Context context;
 
+    // export import db
+    public static File currentDB;
+    public static File backupDB;
+
+
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+
+        // DB
+        currentDB = new File(Environment.getDataDirectory(), "/data/" + context.getPackageName() + "/databases/"
+                + DATABASE_NAME);
+
+        // sd card
+        createDirIfNotExists(new File(Environment.getExternalStorageDirectory(), context.getPackageName() + "/backup_db"));
+        backupDB = new File(Environment.getExternalStorageDirectory(), context.getPackageName() + "/backup_db/" + mAuth.getUid());
+
+        // init when start activity
+        //exportDB(context, 0);
+
     }
 
     @Override
@@ -138,9 +168,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         ArrayList<Transaksi> trans = getAllTransaksiByTanggal(tgl);
         /*
-		 * Toast.makeText(context, tgl + Integer.toString(trans.size()),
-		 * Toast.LENGTH_SHORT) .show();
-		 */
+         * Toast.makeText(context, tgl + Integer.toString(trans.size()),
+         * Toast.LENGTH_SHORT) .show();
+         */
         for (int i = 0; i < trans.size(); i++) {
             updateBudgetByDate(trans.get(i).getTanggal() + " "
                             + trans.get(i).getJam(),
@@ -605,48 +635,91 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 .show();
     }
 
-    public static void importDB(Context c) {
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        File sd = Environment.getExternalStorageDirectory();
-        File data = Environment.getDataDirectory();
-        String currentDBPath = "/data/" + c.getPackageName() + "/databases/"
-                + DATABASE_NAME;
-        String backupDBPath = DATABASE_NAME + "_backup";
-        File currentDB = new File(data, currentDBPath);
-        File backupDB = new File(sd, backupDBPath);
-
+    public static void importDB(final Context c) {
         try {
-
             if (currentDB.exists()) {
-                source = new FileInputStream(backupDB).getChannel();
-                destination = new FileOutputStream(currentDB).getChannel();
-                destination.transferFrom(source, 0, source.size());
-                source.close();
-                destination.close();
-                Toast.makeText(c, "Database berhasil diimport",
-                        Toast.LENGTH_SHORT).show();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
+                String userDBName = mAuth.getCurrentUser().getUid();
+                StorageReference backupDBRef = storageRef.child(c.getPackageName()+ "/backupDB/" + userDBName );
+
+                Util.showProgress(c, "Restoring from cloud...");
+
+                backupDBRef.getFile(backupDB).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Local temp file has been created
+                        FileChannel source = null;
+                        FileChannel destination = null;
+                        try {
+                            source = new FileInputStream(backupDB).getChannel();
+                            destination = new FileOutputStream(currentDB).getChannel();
+                            destination.transferFrom(source, 0, source.size());
+                            source.close();
+                            destination.close();
+
+                            Toast.makeText(c, "Database cloud BERHASIL diimport",
+                                    Toast.LENGTH_SHORT).show();
+                            Util.restart(c);
+                        } catch (Exception e) {
+                            Toast.makeText(c, e.toString(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        Util.stopProgress();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                        FileChannel source = null;
+                        FileChannel destination = null;
+                        try {
+                            source = new FileInputStream(backupDB).getChannel();
+                            destination = new FileOutputStream(currentDB).getChannel();
+                            destination.transferFrom(source, 0, source.size());
+                            source.close();
+                            destination.close();
+
+                            Toast.makeText(c, "Database cloud GAGAL diimport",
+                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(c, "Menggunakan database local",
+                                    Toast.LENGTH_SHORT).show();
+                            Util.restart(c);
+                        } catch (Exception e) {
+                            Toast.makeText(c, e.toString(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        Util.stopProgress();
+                    }
+                });
+
             } else {
-                Toast.makeText(c, "Database tidak ditemukan di folder root",
+                Toast.makeText(c, "Database tidak ditemukan",
                         Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {
+            Toast.makeText(c, e.toString(),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    public static void exportDB(Context c) {
+    public static boolean createDirIfNotExists(File file) {
+        boolean ret = true;
+
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                Log.e("TravellerLog :: ", "Problem creating Image folder");
+                ret = false;
+            }
+        }
+        return ret;
+    }
+
+    public static void exportDB(Context c, int alsoCloud) {
         FileChannel source = null;
         FileChannel destination = null;
-
-        File sd = Environment.getExternalStorageDirectory();
-        File data = Environment.getDataDirectory();
-        String currentDBPath = "/data/" + c.getPackageName() + "/databases/"
-                + DATABASE_NAME;
-        String backupDBPath = DATABASE_NAME + "_backup";
-        File currentDB = new File(data, currentDBPath);
-        File backupDB = new File(sd, backupDBPath);
 
         try {
             source = new FileInputStream(currentDB).getChannel();
@@ -654,12 +727,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             destination.transferFrom(source, 0, source.size());
             source.close();
             destination.close();
-            Toast.makeText(c, "Database dibackup ke\n" + backupDB.toString(),
-                    Toast.LENGTH_LONG).show();
+//            Toast.makeText(c, "Database dibackup ke\n" + backupDB.toString(),
+//                    Toast.LENGTH_LONG).show();
+            if(alsoCloud == 1){
+                uploadToCloudFirebaseStorage(c);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            Toast.makeText(c, e.toString(),
+                    Toast.LENGTH_LONG).show();
         }
     }
+
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -674,4 +754,35 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         super.finalize();
     }
 
+
+    public static void uploadToCloudFirebaseStorage(final Context c){
+        //// Firebase storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+
+        Uri file = Uri.fromFile(backupDB);
+        String userDBName = mAuth.getCurrentUser().getUid();
+        StorageReference backupDBRef = storageRef.child(c.getPackageName()+"/backupDB/"+userDBName);
+        UploadTask uploadTask = backupDBRef.putFile(file);
+
+        Util.showProgress(c, "Syncing to cloud...");
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(c, "Sinkronisasi gagal, cek koneksi internet Anda",
+                        Toast.LENGTH_SHORT).show();
+                Util.stopProgress();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(c, "Sinkronisasi berhasil",
+                        Toast.LENGTH_SHORT).show();
+                Util.stopProgress();
+            }
+        });
+    }
 }

@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.restuibu.aturduit.fragment.AddTransactionFragment;
 import com.restuibu.aturduit.fragment.HistoryFragment;
 import com.restuibu.aturduit.R;
@@ -42,6 +48,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.widget.ArrayAdapter.createFromResource;
+import static com.restuibu.aturduit.model.MySQLiteHelper.backupDB;
+import static com.restuibu.aturduit.model.MySQLiteHelper.importDB;
+import static com.restuibu.aturduit.util.Util.verifyStoragePermissions;
 
 public class MainActivity extends Activity {
     private ActionBar.Tab AddTransactionFragmentTab, HistoryFragmentTab,
@@ -58,6 +67,9 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
+        verifyStoragePermissions(MainActivity.this);
+
+
         // add interstitial
         // if (SplashActivity.mInterstitialAd.isLoaded()) {
         // SplashActivity.mInterstitialAd.show();
@@ -73,6 +85,7 @@ public class MainActivity extends Activity {
         // Asking for the default ActionBar element that our platform supports.
         ActionBar actionBar = getActionBar();
         helper = new MySQLiteHelper(MainActivity.this);
+
         /*
 		 * // Screen handling while hiding ActionBar icon.
 		 * actionBar.setDisplayShowHomeEnabled(false);
@@ -80,6 +93,7 @@ public class MainActivity extends Activity {
 		 * // Screen handling while hiding Actionbar title.
 		 * actionBar.setDisplayShowTitleEnabled(false);
 		 */
+
 
         // Creating ActionBar tabs.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -151,13 +165,11 @@ public class MainActivity extends Activity {
             case R.id.action_about:
                 startActivity(new Intent(MainActivity.this, AboutActivity.class));
                 return true;
-            // case R.id.action_restore:
-            // MySQLiteHelper.importDB(MainActivity.this);
-            // return true;
-            //
-            // case R.id.action_backup:
-            // MySQLiteHelper.exportDB(MainActivity.this);
-            // return true;
+
+            case R.id.action_signout:
+                Util.signOut(MainActivity.this);
+                return true;
+
             case R.id.rate:
                 Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);

@@ -1,6 +1,10 @@
 package com.restuibu.aturduit.util;
 
+import android.os.Environment;
+
 import com.restuibu.aturduit.R;
+
+import java.io.File;
 
 public class Constant {
     public static final String[] konten_desc_about = {
@@ -12,4 +16,6 @@ public class Constant {
     public static final String[] konten_url_about = {
             "https://www.facebook.com/majelistaklimtelkomsel", "https://twitter.com/mttelkomsel", "https://twitter.com/mttelkomsel"
     };
+
+
 }
