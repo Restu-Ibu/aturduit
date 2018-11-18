@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +42,7 @@ import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.util.Util;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,9 +50,14 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.widget.ArrayAdapter.createFromResource;
+import static com.restuibu.aturduit.util.Constant.DATABASE_NAME;
+import static com.restuibu.aturduit.util.Constant.backupDB;
+import static com.restuibu.aturduit.util.Constant.currentDB;
 import static com.restuibu.aturduit.util.Util.changeBudgetTitle;
+import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
 import static com.restuibu.aturduit.util.Util.exportDB;
 import static com.restuibu.aturduit.util.Util.importDB;
+import static com.restuibu.aturduit.util.Util.mAuth;
 import static com.restuibu.aturduit.util.Util.verifyStoragePermissions;
 
 public class MainActivity extends Activity {
@@ -68,30 +75,24 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-
-
-
-        // add interstitial
-        // if (SplashActivity.mInterstitialAd.isLoaded()) {
-        // SplashActivity.mInterstitialAd.show();
-        // }
-        // SplashActivity.mInterstitialAd.setAdListener(new AdListener() {
-        // @Override
-        // public void onAdClosed() {
-        // Util.loadInterstitial(MainActivity.this);
-        // }
-        // });
+        // DB
+        currentDB = new File(Environment.getDataDirectory(), "/data/" + getPackageName() + "/databases/"
+                + DATABASE_NAME);
+        createDirIfNotExists(new File(Environment.getExternalStorageDirectory(), getPackageName() + "/backup_db"));
+        backupDB = new File(Environment.getExternalStorageDirectory(), getPackageName() + "/backup_db/" + mAuth.getUid());
 
 
         // Asking for the default ActionBar element that our platform supports.
         ActionBar actionBar = getActionBar();
-        helper = new MySQLiteHelper(MainActivity.this);
-
         Intent intent = getIntent();
         boolean fromSignIn = intent.getBooleanExtra("fromSignIn", false);
 
+
+
         if(fromSignIn){
             importDB(MainActivity.this, fromSignIn);
+        } else {
+            helper = new MySQLiteHelper(MainActivity.this);
         }
 
         /*

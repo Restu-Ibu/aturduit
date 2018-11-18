@@ -80,8 +80,8 @@ import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.OptionItem;
 
-import static com.restuibu.aturduit.model.MySQLiteHelper.backupDB;
-import static com.restuibu.aturduit.model.MySQLiteHelper.currentDB;
+import static com.restuibu.aturduit.util.Constant.backupDB;
+import static com.restuibu.aturduit.util.Constant.currentDB;
 
 public class Util {
     private static ProgressDialog pd;

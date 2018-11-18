@@ -30,36 +30,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.restuibu.aturduit.util.Constant.DATABASE_NAME;
+import static com.restuibu.aturduit.util.Constant.DATABASE_VERSION;
+import static com.restuibu.aturduit.util.Constant.TBL_TRANSAKSI;
+import static com.restuibu.aturduit.util.Constant.TBL_BUDGET;
+import static com.restuibu.aturduit.util.Constant.TBL_ALARM;
+import static com.restuibu.aturduit.util.Constant.currentDB;
+import static com.restuibu.aturduit.util.Constant.backupDB;
 import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
+import static com.restuibu.aturduit.util.Util.exportDB;
 import static com.restuibu.aturduit.util.Util.mAuth;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-    // Database Name
-    public static final String DATABASE_NAME = "costtracker";
-    public static final String TBL_TRANSAKSI = "tbl_transaksi";
-    public static final String TBL_BUDGET = "tbl_budget";
-    public static final String TBL_ALARM = "tbl_alarm";
+
 
     private Context context;
-
-    // export import db
-    public static File currentDB;
-    public static File backupDB;
 
 
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
 
-        // DB
-        currentDB = new File(Environment.getDataDirectory(), "/data/" + context.getPackageName() + "/databases/"
-                + DATABASE_NAME);
-
-        // sd card
-        createDirIfNotExists(new File(Environment.getExternalStorageDirectory(), context.getPackageName() + "/backup_db"));
-        backupDB = new File(Environment.getExternalStorageDirectory(), context.getPackageName() + "/backup_db/" + mAuth.getUid());
 
         // init when start activity
         //exportDB(context, 0);
@@ -94,9 +85,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(tbl_budget);
         db.execSQL(tbl_transaksi);
         db.execSQL(tbl_alarm);
+
+        // after update but for new users (newVersion == 2)
+        db.execSQL("ALTER TABLE tbl_transaksi ADD COLUMN kategori TEXT");
+        db.execSQL("UPDATE tbl_transaksi SET kategori = 'Lainnya' WHERE kategori IS NULL OR kategori =''");
     }
 
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if(newVersion == 2){
+            db.execSQL("ALTER TABLE tbl_transaksi ADD COLUMN kategori TEXT");
+            db.execSQL("UPDATE tbl_transaksi SET kategori = 'Lainnya' WHERE kategori IS NULL OR kategori =''");
+        }
 
+        exportDB(context, 1, false);
+    }
     public Budget getDetailBudget(int idBudget) {
         String query = "select * from tbl_budget where idBudget=" + idBudget;
 
@@ -638,12 +641,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older books table if existed
 
-        this.onCreate(db);
-    }
 
     @Override
     protected void finalize() throws Throwable {
