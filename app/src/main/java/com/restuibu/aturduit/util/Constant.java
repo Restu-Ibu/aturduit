@@ -7,6 +7,8 @@ import com.restuibu.aturduit.R;
 import java.io.File;
 
 public class Constant {
+    public static final String privacyPolicyUrl = "http://guekeloe.blogspot.com/2018/10/atur-duit.html";
+
     public static final String[] konten_desc_about = {
             "Informasi Aplikasi", "Bagikan", "Kebijakan Privasi"
     };

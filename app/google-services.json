@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "1017980932850-94qlf5vr2m4740llukjjoqbrqpog5pgo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.restuibu.aturduit",
+            "certificate_hash": "2b33a5735864dba0a20bf4b85a48e19e60ff6ed8"
+          }
+        },
+        {
           "client_id": "1017980932850-8b3t7ta7k38d38865bl3g7g3jstajd00.apps.googleusercontent.com",
           "client_type": 3
         }

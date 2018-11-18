@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
 import static com.restuibu.aturduit.util.Util.mAuth;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
@@ -94,6 +95,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(tbl_transaksi);
         db.execSQL(tbl_alarm);
     }
+
 
     public Budget getDetailBudget(int idBudget) {
         String query = "select * from tbl_budget where idBudget=" + idBudget;
@@ -387,8 +389,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE name='tbl_budget'");
         db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE name='tbl_transaksi'");
         db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE name='tbl_alarm'");
-        Toast.makeText(context, "Database berhasil direset", Toast.LENGTH_LONG)
-                .show();
+
     }
 
     public Transaksi getDetailTransaksi(int idTransaksi) {
@@ -635,110 +636,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 .show();
     }
 
-    public static void importDB(final Context c) {
-        try {
-            if (currentDB.exists()) {
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReference();
-                String userDBName = mAuth.getCurrentUser().getUid();
-                StorageReference backupDBRef = storageRef.child(c.getPackageName()+ "/backupDB/" + userDBName );
-
-                Util.showProgress(c, "Restoring from cloud...");
-
-                backupDBRef.getFile(backupDB).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Local temp file has been created
-                        FileChannel source = null;
-                        FileChannel destination = null;
-                        try {
-                            source = new FileInputStream(backupDB).getChannel();
-                            destination = new FileOutputStream(currentDB).getChannel();
-                            destination.transferFrom(source, 0, source.size());
-                            source.close();
-                            destination.close();
-
-                            Toast.makeText(c, "Database cloud BERHASIL diimport",
-                                    Toast.LENGTH_SHORT).show();
-                            Util.restart(c);
-                        } catch (Exception e) {
-                            Toast.makeText(c, e.toString(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        Util.stopProgress();
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                        FileChannel source = null;
-                        FileChannel destination = null;
-                        try {
-                            source = new FileInputStream(backupDB).getChannel();
-                            destination = new FileOutputStream(currentDB).getChannel();
-                            destination.transferFrom(source, 0, source.size());
-                            source.close();
-                            destination.close();
-
-                            Toast.makeText(c, "Database cloud GAGAL diimport",
-                                    Toast.LENGTH_SHORT).show();
-                            Toast.makeText(c, "Menggunakan database local",
-                                    Toast.LENGTH_SHORT).show();
-                            Util.restart(c);
-                        } catch (Exception e) {
-                            Toast.makeText(c, e.toString(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        Util.stopProgress();
-                    }
-                });
-
-            } else {
-                Toast.makeText(c, "Database tidak ditemukan",
-                        Toast.LENGTH_SHORT).show();
-            }
-
-        } catch (Exception e) {
-            Toast.makeText(c, e.toString(),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public static boolean createDirIfNotExists(File file) {
-        boolean ret = true;
-
-        if (!file.exists()) {
-            if (!file.mkdirs()) {
-                Log.e("TravellerLog :: ", "Problem creating Image folder");
-                ret = false;
-            }
-        }
-        return ret;
-    }
-
-    public static void exportDB(Context c, int alsoCloud) {
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(currentDB).getChannel();
-            destination = new FileOutputStream(backupDB).getChannel();
-            destination.transferFrom(source, 0, source.size());
-            source.close();
-            destination.close();
-//            Toast.makeText(c, "Database dibackup ke\n" + backupDB.toString(),
-//                    Toast.LENGTH_LONG).show();
-            if(alsoCloud == 1){
-                uploadToCloudFirebaseStorage(c);
-            }
-        } catch (IOException e) {
-            Toast.makeText(c, e.toString(),
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-
 
 
     @Override
@@ -755,34 +652,5 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
 
-    public static void uploadToCloudFirebaseStorage(final Context c){
-        //// Firebase storage
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        // Create a storage reference from our app
-        StorageReference storageRef = storage.getReference();
 
-        Uri file = Uri.fromFile(backupDB);
-        String userDBName = mAuth.getCurrentUser().getUid();
-        StorageReference backupDBRef = storageRef.child(c.getPackageName()+"/backupDB/"+userDBName);
-        UploadTask uploadTask = backupDBRef.putFile(file);
-
-        Util.showProgress(c, "Syncing to cloud...");
-
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(c, "Sinkronisasi gagal, cek koneksi internet Anda",
-                        Toast.LENGTH_SHORT).show();
-                Util.stopProgress();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(c, "Sinkronisasi berhasil",
-                        Toast.LENGTH_SHORT).show();
-                Util.stopProgress();
-            }
-        });
-    }
 }

@@ -48,8 +48,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.widget.ArrayAdapter.createFromResource;
-import static com.restuibu.aturduit.model.MySQLiteHelper.backupDB;
-import static com.restuibu.aturduit.model.MySQLiteHelper.importDB;
+import static com.restuibu.aturduit.util.Util.changeBudgetTitle;
+import static com.restuibu.aturduit.util.Util.exportDB;
+import static com.restuibu.aturduit.util.Util.importDB;
 import static com.restuibu.aturduit.util.Util.verifyStoragePermissions;
 
 public class MainActivity extends Activity {
@@ -59,7 +60,7 @@ public class MainActivity extends Activity {
     private Fragment historyFragment = new HistoryFragment();
     private Fragment statisticFragment = new StatisticFragment();
     private MySQLiteHelper helper;
-
+    private Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +68,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        verifyStoragePermissions(MainActivity.this);
+
 
 
         // add interstitial
@@ -85,6 +86,13 @@ public class MainActivity extends Activity {
         // Asking for the default ActionBar element that our platform supports.
         ActionBar actionBar = getActionBar();
         helper = new MySQLiteHelper(MainActivity.this);
+
+        Intent intent = getIntent();
+        boolean fromSignIn = intent.getBooleanExtra("fromSignIn", false);
+
+        if(fromSignIn){
+            importDB(MainActivity.this, fromSignIn);
+        }
 
         /*
 		 * // Screen handling while hiding ActionBar icon.
@@ -139,8 +147,10 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.main, menu);
 
+        changeBudgetTitle(MainActivity.this, menu);
         return true;
     }
 
@@ -167,7 +177,7 @@ public class MainActivity extends Activity {
                 return true;
 
             case R.id.action_signout:
-                Util.signOut(MainActivity.this);
+                exportDB(MainActivity.this,1, true);
                 return true;
 
             case R.id.rate:
@@ -281,6 +291,8 @@ public class MainActivity extends Activity {
                                 startDate.getTime(), endDate.getTime());
 
                         helper.addBudget(budget);
+
+                        changeBudgetTitle(MainActivity.this, menu);
 
                         alert.dismiss();
                     }
@@ -462,6 +474,7 @@ public class MainActivity extends Activity {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 // TODO Auto-generated method stub
                                 helper.deleteBudget(budget.getIdBudget());
+                                changeBudgetTitle(MainActivity.this, menu);
                                 showAlertInsertBudget();
 
                             }
@@ -537,15 +550,5 @@ public class MainActivity extends Activity {
         AdRequest adRequest = new AdRequest.Builder().build();
         SplashActivity.mInterstitialAd.loadAd(adRequest);
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!Util.checkBudget(MainActivity.this))
-            Toast.makeText(MainActivity.this, "Budget belum ditetapkan",
-                    Toast.LENGTH_SHORT).show();
-
-    }
-
 
 }

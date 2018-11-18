@@ -79,8 +79,8 @@
     <string name="info_copyright">Copyright © 2018 by Restu Ibu\nAtur Duit 1.1</string>
 
 
-    <string name="banner_ad_unit_id">ca-app-pub-6657666130252014/7859784872-</string>
-    <string name="interstitial_ad_unit_id">ca-app-pub-6657666130252014/8402680470-</string>
+    <string name="banner_ad_unit_id">ca-app-pub-6657666130252014/7859784872</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-6657666130252014/8402680470</string>
 
     <!-- activity_about -->
     <string name="about">Restu Ibu rilis aplikasi lagi nih, namanya Atur Duit (remake dari Cost Tracker).
@@ -91,11 +91,11 @@ Fitur yang dimiliki adalah\n\n
 3. Menampilkan riwayat budget yang telah dilakukan.\n
 4. Menampilkan grafik pengeluaran berdasarkan harian, bulanan, dan tahunan.\n
 5. Mengatur jumlah anggaran/budget berdasarkan mingguan dan bulanan.\n
-6. Widget sisa budget bisa di home/lockscreen\n\n
-email: emirkipang@gmail.com\n
-Copyright @RestuIbu\n\n
-Donasi ke Rekening BNI\n
-0210542740\n an EMIR SEPTI ANSORI D\n\nSemoga aplikasi ini bermanfaat :))
+6. Widget sisa budget bisa di home/lockscreen\n
+7. Authentikasi dengan Google Sign In\n
+8. Backup dan Restore database dari Cloud\n\n
+
+Semoga aplikasi ini bermanfaat.
     </string>
 
     <!-- alertdialog_add_timer.xml -->
@@ -114,6 +114,15 @@ Donasi ke Rekening BNI\n
     <string name="TglAkhir">Tgl Akhir</string>
     <string name="Kategori">Kategori</string>
     <string name="Sisa">Sisa</string>
+
+    <string name="release_code_22">
+        Apa yang baru di <b>Atur Duit 1.1</b>?\n
+        1. <b>Integrasi ke Firebase\n</b>
+        2. <b>Login dengan Google\n</b>
+        3. <b>Backup database ke cloud\n</b>
+        4. <b>Restore database dari cloud\n</b>
+
+    </string>
 
 
     <string-array name="category_array">
@@ -237,6 +246,7 @@ Donasi ke Rekening BNI\n
 
     <string name="id_fmt">User ID: %s</string>
     <string name="email_fmt">Email: %s</string>
+
 
     <!-- end of firebase auth -->
 </resources>

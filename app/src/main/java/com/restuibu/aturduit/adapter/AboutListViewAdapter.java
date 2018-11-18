@@ -1,6 +1,8 @@
 package com.restuibu.aturduit.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.restuibu.aturduit.R;
+import com.restuibu.aturduit.activity.AboutActivity;
+import com.restuibu.aturduit.activity.AboutDetailActivity;
+import com.restuibu.aturduit.activity.MainActivity;
 import com.restuibu.aturduit.model.About;
 import com.restuibu.aturduit.util.Util;
 
 import java.util.ArrayList;
+
+import static com.restuibu.aturduit.util.Constant.privacyPolicyUrl;
 
 public class AboutListViewAdapter extends BaseAdapter {
     private Context mContext;
@@ -61,7 +68,29 @@ public class AboutListViewAdapter extends BaseAdapter {
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    switch(position){
+                        case 0:
+                            mContext.startActivity(new Intent(mContext, AboutDetailActivity.class));
+                            break;
+                        case 1:
+                            Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                            share.setType("text/plain");
+                            share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                            // Add data to the intent, the receiving app will decide
+                            // what to do with it.
+                            share.putExtra(Intent.EXTRA_SUBJECT, "Atur Duit");
+                            share.putExtra(Intent.EXTRA_TEXT, "http://play.google.com/store/apps/details?id=" + mContext.getPackageName());
 
+                            mContext.startActivity(Intent.createChooser(share, "Share link!"));
+
+
+                            break;
+                        case 2:
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse(privacyPolicyUrl));
+                            mContext.startActivity(i);
+                            break;
+                    }
                 }
             });
 

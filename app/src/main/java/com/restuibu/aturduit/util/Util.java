@@ -1,7 +1,13 @@
 package com.restuibu.aturduit.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
+import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -22,11 +28,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -45,8 +58,14 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.restuibu.aturduit.activity.GoogleSignInActivity;
 import com.restuibu.aturduit.activity.HistoryAndStatisticBudgetActivity;
 import com.restuibu.aturduit.fragment.AddTransactionFragment;
@@ -60,6 +79,9 @@ import com.restuibu.aturduit.model.Alarm;
 import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.OptionItem;
+
+import static com.restuibu.aturduit.model.MySQLiteHelper.backupDB;
+import static com.restuibu.aturduit.model.MySQLiteHelper.currentDB;
 
 public class Util {
     private static ProgressDialog pd;
@@ -85,9 +107,11 @@ public class Util {
                     public void onComplete(@NonNull Task<Void> task) {
                         Intent i = new Intent(activity, GoogleSignInActivity.class);
                         activity.startActivity(i);
+                        ((MainActivity)activity).finish();
                     }
                 });
     }
+
 
 
 
@@ -169,7 +193,7 @@ public class Util {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                MySQLiteHelper.importDB(c);
+                importDB(c, false);
                 Util.restart(c);
                 alert.dismiss();
             }
@@ -323,10 +347,10 @@ public class Util {
                 // TODO Auto-generated method stub
                 switch (arg2) {
                     case 0:
-                        MySQLiteHelper.importDB(c);
+                        importDB(c, false);
                         break;
                     case 1:
-                        MySQLiteHelper.exportDB(c, 1);
+                        exportDB(c, 1, false);
                         break;
                     case 2:
                         //Util.alertTimer(c);
@@ -350,6 +374,10 @@ public class Util {
                                         MySQLiteHelper helper = new MySQLiteHelper(
                                                 c);
                                         helper.resetDatabase();
+
+                                        Toast.makeText(c, "Database berhasil direset", Toast.LENGTH_LONG)
+                                                .show();
+
                                         Util.restart(c);
 
                                     }
@@ -588,6 +616,163 @@ public class Util {
         }
     }
 
+    public static void importDB(final Context c, final boolean fromSignIn) {
+
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            String userDBName = mAuth.getCurrentUser().getUid();
+            StorageReference backupDBRef = storageRef.child(c.getPackageName() + "/backupDB/" + userDBName);
+
+            Util.showProgress(c, "Restoring from cloud...");
+
+            backupDBRef.getFile(backupDB).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    // Local temp file has been created
+                    FileChannel source = null;
+                    FileChannel destination = null;
+                    try {
+                        source = new FileInputStream(backupDB).getChannel();
+                        destination = new FileOutputStream(currentDB).getChannel();
+                        destination.transferFrom(source, 0, source.size());
+                        source.close();
+                        destination.close();
+
+                        Toast.makeText(c, "Sinkronisasi database cloud berhasil",
+                                Toast.LENGTH_SHORT).show();
+
+                        if(!fromSignIn){
+                            Util.restart(c);
+                        }
+
+
+                    } catch (Exception e) {
+                        Toast.makeText(c, e.toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    Util.stopProgress();
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                    FileChannel source = null;
+                    FileChannel destination = null;
+                    try {
+                        source = new FileInputStream(backupDB).getChannel();
+                        destination = new FileOutputStream(currentDB).getChannel();
+                        destination.transferFrom(source, 0, source.size());
+                        source.close();
+                        destination.close();
+
+                        Toast.makeText(c, "Sinkronisasi database cloud gagal",
+                                Toast.LENGTH_SHORT).show();
+                        Util.restart(c);
+                    } catch (FileNotFoundException e) {
+                        Toast.makeText(c, "Database tidak ditemukan di cloud",
+                                Toast.LENGTH_SHORT).show();
+
+                        MySQLiteHelper helper = new MySQLiteHelper(
+                                c);
+                        helper.resetDatabase();
+
+                    } catch (IOException e) {
+                        Toast.makeText(c, e.toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    Util.stopProgress();
+                }
+            });
+
+
+
+
+    }
+
+    public static boolean createDirIfNotExists(File file) {
+        boolean ret = true;
+
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                Log.e("TravellerLog :: ", "Problem creating Image folder");
+                ret = false;
+            }
+        }
+        return ret;
+    }
+
+    public static void exportDB(Context c, int alsoCloud, boolean isSignOut) {
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+            source = new FileInputStream(currentDB).getChannel();
+            destination = new FileOutputStream(backupDB).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+            if (alsoCloud == 1) {
+                uploadToCloudFirebaseStorage(c, isSignOut);
+            }
+        } catch (IOException e) {
+            Toast.makeText(c, e.toString(),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public static void uploadToCloudFirebaseStorage(final Context c, final boolean isSignOut) {
+        //// Firebase storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+
+        Uri file = Uri.fromFile(backupDB);
+        String userDBName = mAuth.getCurrentUser().getUid();
+        StorageReference backupDBRef = storageRef.child(c.getPackageName() + "/backupDB/" + userDBName);
+        UploadTask uploadTask = backupDBRef.putFile(file);
+
+        Util.showProgress(c, "Syncing to cloud...");
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(c, "Sinkronisasi gagal, cek koneksi internet Anda",
+                        Toast.LENGTH_SHORT).show();
+                Util.stopProgress();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(c, "Sinkronisasi berhasil",
+                        Toast.LENGTH_SHORT).show();
+
+                if(isSignOut){
+                    Util.signOut((Activity) c);
+                }
+
+                Util.stopProgress();
+            }
+        });
+    }
+
+    public static void changeBudgetTitle(Context c, Menu menu){
+        if(menu != null){
+            MenuItem budgetMenu = menu.findItem(R.id.budget);
+
+            if (!Util.checkBudget(c)){
+                SpannableString s = new SpannableString("BUDGET NOT SET");
+                s.setSpan(new ForegroundColorSpan(Color.RED), 0, s.length(), 0);
+                budgetMenu.setTitle(s);
+
+            } else {
+                SpannableString s = new SpannableString("BUDGET SET");
+                s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
+                budgetMenu.setTitle(s);
+            }
+        }
+    }
 
 
 }

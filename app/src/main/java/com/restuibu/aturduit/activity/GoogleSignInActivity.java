@@ -27,6 +27,7 @@ import com.restuibu.aturduit.util.Util;
 
 import static com.restuibu.aturduit.util.Util.mAuth;
 import static com.restuibu.aturduit.util.Util.mGoogleSignInClient;
+import static com.restuibu.aturduit.util.Util.verifyStoragePermissions;
 
 public class GoogleSignInActivity extends Activity implements
         View.OnClickListener{
@@ -42,6 +43,7 @@ public class GoogleSignInActivity extends Activity implements
     private TextView mStatusTextView;
     private TextView mDetailTextView;
     private SignInButton googleSignIn;
+    private boolean fromSignIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class GoogleSignInActivity extends Activity implements
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_googlesignin);
 
-
+        verifyStoragePermissions(GoogleSignInActivity.this);
 
         // Views
         mStatusTextView = findViewById(R.id.status);
@@ -129,6 +131,7 @@ public class GoogleSignInActivity extends Activity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            fromSignIn = true;
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -177,6 +180,7 @@ public class GoogleSignInActivity extends Activity implements
 //            findViewById(R.id.signInButton).setVisibility(View.GONE);
 //            findViewById(R.id.signOutAndDisconnect).setVisibility(View.VISIBLE);
             Intent i = new Intent(GoogleSignInActivity.this, MainActivity.class);
+            i.putExtra("fromSignIn", fromSignIn);
             startActivity(i);
 
             GoogleSignInActivity.this.finish();
