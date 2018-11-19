@@ -33,7 +33,7 @@
             android:layout_marginLeft="0.5sp"
             android:layout_marginRight="0.5sp"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="right"
             android:text="@string/title2"
             android:textColor="#777777"
             android:textStyle="bold" />
@@ -46,7 +46,17 @@
             android:layout_weight="1"
             android:gravity="right"
             android:paddingRight="16sp"
-            android:text="@string/btn_search"
+            android:textColor="#777777"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/title4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0.5sp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="16sp"
             android:textColor="#777777"
             android:textStyle="bold" />
     </TableRow>
@@ -60,6 +70,8 @@
         android:hint="@string/btn_search"
         android:textColor="#333333"
         android:visibility="gone" />
+
+
 
     <TextView
         android:id="@+id/textView1"

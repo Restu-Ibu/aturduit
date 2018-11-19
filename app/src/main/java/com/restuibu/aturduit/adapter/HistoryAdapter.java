@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -14,15 +15,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.restuibu.aturduit.fragment.HistoryFragment;
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.model.History;
-import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.Transaksi;
 import com.restuibu.aturduit.util.Util;
+import static com.restuibu.aturduit.util.Util.helper;
 
 public class HistoryAdapter extends ArrayAdapter<History> implements Filterable {
 
@@ -70,26 +72,41 @@ public class HistoryAdapter extends ArrayAdapter<History> implements Filterable 
 		TextView tanggal = (TextView) rowView.findViewById(R.id.textView1);
 		TextView total = (TextView) rowView.findViewById(R.id.textView2);
 		TextView jumlah = (TextView) rowView.findViewById(R.id.textView3);
+		LinearLayout llKategori;
+		TextView tvKategori;
 
-		// 3. get
-		/*Calendar cal = Calendar.getInstance();
-		TimeZone tz = cal.getTimeZone();// get your local time zone.
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		sdf.setTimeZone(tz);// set time zone.
-		String localTime = sdf.format(new Date(itemsArrayList.get(position)
-				.getTanggal() * 1000));
-		Date date = new Date();
-
-		try {
-			date = sdf.parse(localTime);
-		} catch (java.text.ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}// get local date
-*/
 		tanggal.setText((itemsArrayList.get(position).getTanggal()));
 		total.setText(Util.formatUang(itemsArrayList.get(position).getTotal()));
 		jumlah.setText(itemsArrayList.get(position).getJumlah());
+
+		if (!itemsArrayList.get(position).getTotal_food().equals("0")){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori1);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori1);
+			tvKategori.setText("("+itemsArrayList.get(position).getTotal_food()+")");
+		}if (!itemsArrayList.get(position).getTotal_transport().equals("0")){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori2);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori2);
+			tvKategori.setText("("+itemsArrayList.get(position).getTotal_transport()+")");
+		}if (!itemsArrayList.get(position).getTotal_entertain().equals("0")){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori3);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori3);
+			tvKategori.setText("("+itemsArrayList.get(position).getTotal_entertain()+")");
+		}if (!itemsArrayList.get(position).getTotal_groceries().equals("0")){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori4);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori4);
+			tvKategori.setText("("+itemsArrayList.get(position).getTotal_groceries()+")");
+		}if (!itemsArrayList.get(position).getTotal_other().equals("0")){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori5);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori5);
+			tvKategori.setText("("+itemsArrayList.get(position).getTotal_other()+")");
+		}
+
+		total.setGravity(Gravity.RIGHT);
 
 		selector.setOnClickListener(new View.OnClickListener() {
 
@@ -98,8 +115,6 @@ public class HistoryAdapter extends ArrayAdapter<History> implements Filterable 
 
 				ArrayList<Transaksi> listTransaksi = new ArrayList<Transaksi>();
 
-				MySQLiteHelper helper = new MySQLiteHelper(context);
-		
 				listTransaksi = helper.getAllTransaksiByTanggal(itemsArrayList
 						.get(position).getTanggal());
 				HistoryFragment.adapterTransaksi = new TransaksiAdapter(
@@ -112,7 +127,9 @@ public class HistoryAdapter extends ArrayAdapter<History> implements Filterable 
 
 				HistoryFragment.tTitle1.setText(context.getResources().getString(R.string.jam));
 				HistoryFragment.tTitle2.setText(context.getResources().getString(R.string.Deskripsi));
+				HistoryFragment.tTitle2.setGravity(Gravity.LEFT);
 				HistoryFragment.tTitle3.setText(context.getResources().getString(R.string.Harga));
+				HistoryFragment.tTitle4.setText(context.getResources().getString(R.string.Kategori));
 			}
 		});
 
@@ -133,8 +150,6 @@ public class HistoryAdapter extends ArrayAdapter<History> implements Filterable 
 							public void onClick(DialogInterface arg0, int arg1) {
 								// TODO Auto-generated method stub
 
-								MySQLiteHelper helper = new MySQLiteHelper(
-										context);
 								SQLiteDatabase db = helper
 										.getReadableDatabase();
 								helper.onCreate(db);
@@ -220,7 +235,8 @@ public class HistoryAdapter extends ArrayAdapter<History> implements Filterable 
 									.getJumlah()
 									.toUpperCase()
 									.startsWith(
-											constraint.toString().toUpperCase())) {
+											constraint.toString().toUpperCase())
+							) {
 						nPlanetList.add(itemsArrayList.get(i));
 
 					}

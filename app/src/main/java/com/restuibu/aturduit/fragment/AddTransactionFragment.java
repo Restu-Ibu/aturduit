@@ -106,7 +106,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
-                category = "Makanan dan minuman";
+                category = getString(R.string.kategori1);
                 Util.removeOtherCategories(getActivity(), ivKategori, 0);
                 Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
             }
@@ -116,7 +116,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
-                category = "Transportasi";
+                category = getString(R.string.kategori2);
                 Util.removeOtherCategories(getActivity(), ivKategori, 1);
                 Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
             }
@@ -126,7 +126,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
-                category = "Hiburan";
+                category = getString(R.string.kategori3);
                 Util.removeOtherCategories(getActivity(), ivKategori, 2);
                 Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
             }
@@ -136,7 +136,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
-                category = "Belanjaan";
+                category = getString(R.string.kategori4);
                 Util.removeOtherCategories(getActivity(), ivKategori, 3);
                 Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
             }
@@ -145,7 +145,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
-                category = "Lainnya";
+                category = getString(R.string.kategori5);
                 Util.removeOtherCategories(getActivity(), ivKategori, 4);
                 Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
             }
@@ -390,7 +390,7 @@ public class AddTransactionFragment extends Fragment {
                         Transaksi trans = new Transaksi(0, eDesc.getText()
                                 .toString(), ePrice_,
                                 bTimePicker.getText().toString(), bDatePicker
-                                .getText().toString(), dt.getTime());
+                                .getText().toString(), dt.getTime(), category);
                         helper.addTransaksi(trans);
 
                         helper.updateBudgetByDate(bDatePicker.getText()

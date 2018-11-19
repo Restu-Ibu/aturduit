@@ -56,6 +56,15 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#777777" />
 
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10sp"
+            android:text="@string/e_kategori"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#777777" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -105,6 +114,14 @@
             android:text="@string/titikdua"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#777777" />
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titikdua"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#777777" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -144,6 +161,12 @@
 
         <TextView
             android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#777777" />
+        <TextView
+            android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"

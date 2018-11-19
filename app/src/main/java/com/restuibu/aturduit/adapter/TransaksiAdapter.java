@@ -7,6 +7,8 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +20,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -28,6 +32,10 @@ import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.Transaksi;
 import com.restuibu.aturduit.util.Util;
+
+import org.w3c.dom.Text;
+
+import static com.restuibu.aturduit.util.Util.helper;
 
 public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 		Filterable {
@@ -76,13 +84,45 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 		TextView jam = (TextView) rowView.findViewById(R.id.textView1);
 		TextView deskripsi = (TextView) rowView.findViewById(R.id.textView2);
 		TextView harga = (TextView) rowView.findViewById(R.id.textView3);
+        LinearLayout llKategori;
+        TextView tvKategori;
 
 		// 3. get
 		jam.setText(itemsArrayList.get(position).getJam());
 		deskripsi.setText(itemsArrayList.get(position).getDeskripsi());
+        deskripsi.setGravity(Gravity.LEFT);
 		harga.setText(Util.formatUang(itemsArrayList.get(position).getHarga()));
 
-		selector.setOnClickListener(new View.OnClickListener() {
+		//Toast.makeText(context, itemsArrayList.get(position).getKategori(), Toast.LENGTH_SHORT).show();
+        if (itemsArrayList.get(position).getKategori().equals(context.getString(R.string.kategori1))){
+            llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori1);
+            llKategori.setVisibility(View.VISIBLE);
+            tvKategori = (TextView) rowView.findViewById(R.id.tvKategori1);
+            tvKategori.setVisibility(View.GONE);
+        }else if (itemsArrayList.get(position).getKategori().equals(context.getString(R.string.kategori2))){
+            llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori2);
+            llKategori.setVisibility(View.VISIBLE);
+            tvKategori = (TextView) rowView.findViewById(R.id.tvKategori2);
+            tvKategori.setVisibility(View.GONE);
+        }else if (itemsArrayList.get(position).getKategori().equals(context.getString(R.string.kategori3))){
+            llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori3);
+            llKategori.setVisibility(View.VISIBLE);
+            tvKategori = (TextView) rowView.findViewById(R.id.tvKategori3);
+            tvKategori.setVisibility(View.GONE);
+        }else if (itemsArrayList.get(position).getKategori().equals(context.getString(R.string.kategori4))){
+            llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori4);
+            llKategori.setVisibility(View.VISIBLE);
+            tvKategori = (TextView) rowView.findViewById(R.id.tvKategori4);
+            tvKategori.setVisibility(View.GONE);
+        }else if (itemsArrayList.get(position).getKategori().equals(context.getString(R.string.kategori5))){
+            llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori5);
+            llKategori.setVisibility(View.VISIBLE);
+            tvKategori = (TextView) rowView.findViewById(R.id.tvKategori5);
+            tvKategori.setVisibility(View.GONE);
+        }
+
+
+        selector.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -104,6 +144,8 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 						.findViewById(R.id.textView12);
 				TextView tanggal = (TextView) dialogview
 						.findViewById(R.id.textView13);
+                TextView kategori = (TextView) dialogview
+                        .findViewById(R.id.textView18);
 
 				idTransaksi.setText(Integer.toString(itemsArrayList.get(
 						position).getIdTransaksi()));
@@ -111,8 +153,8 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 				harga.setText(Util.formatUang(itemsArrayList.get(position)
 						.getHarga()));
 				jam.setText(itemsArrayList.get(position).getJam());
-
 				tanggal.setText(itemsArrayList.get(position).getTanggal());
+				kategori.setText(itemsArrayList.get(position).getKategori());
 
 				alert.show();
 			}
@@ -128,6 +170,7 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 				final AlertDialog alert = new AlertDialog.Builder(context)
 						.create();
 
+
 				alert.setMessage("Ubah atau hapus transaksi?");
 				alert.setView(dialogview);
 
@@ -136,14 +179,13 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 				final Button bDelete = (Button) dialogview
 						.findViewById(R.id.button2);
 
+
+
 				bEdit.setOnClickListener(new OnClickListener() {
 
 					public void onClick(View arg0) {
 						// TODO Auto-generated method stub
 						alert.dismiss();
-
-						final MySQLiteHelper helper = new MySQLiteHelper(
-								context);
 
 						LayoutInflater inflater = LayoutInflater.from(context);
 						View dialogview = inflater.inflate(
@@ -153,10 +195,6 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 
 						final EditText eId = (EditText) dialogview
 								.findViewById(R.id.editText1);
-						// final EditText eTime = (EditText) dialogview
-						// .findViewById(R.id.editText2);
-						// final EditText eDate = (EditText) dialogview
-						// .findViewById(R.id.editText3);
 						final Button bTimePicker = (Button) dialogview
 								.findViewById(R.id.button3);
 						final Button bDatePicker = (Button) dialogview
@@ -166,6 +204,77 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 								.findViewById(R.id.editText4);
 						final EditText eDescription = (EditText) dialogview
 								.findViewById(R.id.editText5);
+						final ImageView[] ivKategori = new ImageView[5];
+
+						ivKategori[0] = (ImageView) dialogview.findViewById(R.id.imageViewKategori1);
+						ivKategori[1] = (ImageView) dialogview.findViewById(R.id.imageViewKategori2);
+						ivKategori[2] = (ImageView) dialogview.findViewById(R.id.imageViewKategori3);
+						ivKategori[3] = (ImageView) dialogview.findViewById(R.id.imageViewKategori4);
+						ivKategori[4] = (ImageView) dialogview.findViewById(R.id.imageViewKategori5);
+
+                        final String[] category = {itemsArrayList
+                                .get(position).getKategori()};
+
+						if (category[0].equals(context.getString(R.string.kategori1))){
+							ivKategori[0].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+						}else if (category[0].equals(context.getString(R.string.kategori2))){
+							ivKategori[1].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+						}else if (category[0].equals(context.getString(R.string.kategori3))){
+							ivKategori[2].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+						}else if (category[0].equals(context.getString(R.string.kategori4))){
+							ivKategori[3].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+						}else if (category[0].equals(context.getString(R.string.kategori5))){
+							ivKategori[4].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+						}
+
+						ivKategori[0].setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+                                category[0] = context.getString(R.string.kategori1);
+								Util.removeOtherCategories(context, ivKategori, 0);
+								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
+							}
+						});
+
+						ivKategori[1].setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+								category[0] = context.getString(R.string.kategori2);
+								Util.removeOtherCategories(context, ivKategori, 1);
+								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
+							}
+						});
+
+						ivKategori[2].setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+								category[0] = context.getString(R.string.kategori3);
+								Util.removeOtherCategories(context, ivKategori, 2);
+								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
+							}
+						});
+
+						ivKategori[3].setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+								category[0] = context.getString(R.string.kategori4);
+								Util.removeOtherCategories(context, ivKategori, 3);
+								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
+							}
+						});
+						ivKategori[4].setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+								category[0] = context.getString(R.string.kategori5);
+								Util.removeOtherCategories(context, ivKategori, 4);
+								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
+							}
+						});
 
 						eId.setText(Integer.toString(itemsArrayList.get(
 								position).getIdTransaksi()));
@@ -452,7 +561,7 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 												+ bTimePicker.getText()
 														.toString(),
 												new SimpleDateFormat(
-														"dd/MM/yyyy kk:mm:ss")));
+														"dd/MM/yyyy kk:mm:ss")), category[0]);
 								helper.updateTransaksi(transaksiUpdate);
 
 								// update amount budget yang transaksinya masih
@@ -565,7 +674,14 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 									.getHarga()
 									.toUpperCase()
 									.startsWith(
-											constraint.toString().toUpperCase())) {
+											constraint.toString().toUpperCase()
+                                    )|| itemsArrayList
+                            .get(i)
+                            .getKategori()
+                            .toUpperCase()
+                            .startsWith(
+                                    constraint.toString().toUpperCase()
+                            )) {
 						nPlanetList.add(itemsArrayList.get(i));
 
 					}

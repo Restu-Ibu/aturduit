@@ -414,7 +414,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 trans = new Transaksi(Integer.parseInt(cursor.getString(0)),
                         cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getString(4),
-                        Long.parseLong(cursor.getString(5)));
+                        Long.parseLong(cursor.getString(5)),cursor.getString(6));
 
             } while (cursor.moveToNext());
         }
@@ -427,9 +427,28 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // 1. build the query
         // String query = "select * from tbl_friendlist";
 
-        String query = "select distinct tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by time asc";
-        // String query =
-        // "select distinct strftime('%d-%m-%Y', tanggal / 1000, 'unixepoch') tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by tanggal asc";
+        //String query = "select distinct tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by time asc";
+
+
+
+        String query = ""
+                + "SELECT "
+                + "a.tanggal, "
+                + "a.total, "
+                + "a.jumlah, "
+                + "b.total_food, "
+                + "b.total_transport, "
+                + "b.total_entertain, "
+                + "b.total_groceries, "
+                + "b.total_others "
+                + "FROM "
+                + "(select distinct tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by time asc) a "
+                + "INNER JOIN "
+                + "(select tanggal, SUM(case when kategori = 'Makanan dan minuman' then 1 else 0 end) as total_food, SUM(case when kategori = 'Transportasi' then 1  else 0 end) as total_transport, SUM(case when kategori = 'Hiburan' then 1  else 0 end) as total_entertain, SUM(case when kategori = 'Belanjaan' then 1  else 0 end) as total_groceries, SUM(case when kategori = 'Lainnya' then 1  else 0 end) as total_others from tbl_transaksi GROUP BY tanggal) b "
+                + "ON a.tanggal = b.tanggal";
+
+
+                // "select distinct strftime('%d-%m-%Y', tanggal / 1000, 'unixepoch') tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by tanggal asc";
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -439,7 +458,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 hist = new History(cursor.getString(0), cursor.getString(1),
-                        cursor.getString(2));
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        cursor.getString(6),
+                        cursor.getString(7));
                 history.add(hist);
 
             } while (cursor.moveToNext());
@@ -509,6 +533,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put("jam", transaksi.getJam());
         values.put("tanggal", transaksi.getTanggal());
         values.put("time", transaksi.getTime());
+        values.put("kategori", transaksi.getKategori());
         db.insert(TBL_TRANSAKSI, null, values);
         Toast.makeText(context, "Transaksi berhasil ditambahkan",
                 Toast.LENGTH_SHORT).show();
@@ -596,7 +621,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 trans = new Transaksi(Integer.parseInt(cursor.getString(0)),
                         cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getString(4),
-                        Long.parseLong(cursor.getString(5)));
+                        Long.parseLong(cursor.getString(5)), cursor.getString(6));
 
                 transaksi.add(trans);
             } while (cursor.moveToNext());
@@ -630,11 +655,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public void updateTransaksi(Transaksi transaksi) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("update tbl_transaksi set jam='" + transaksi.getJam()
-                + "',tanggal='" + transaksi.getTanggal() + "',harga='"
-                + transaksi.getHarga() + "',deskripsi='"
-                + transaksi.getDeskripsi() + "',time=" + transaksi.getTime()
-                + " where idTransaksi='" + transaksi.getIdTransaksi() + "'");
+        db.execSQL("update tbl_transaksi set " +
+                "jam='" + transaksi.getJam() +
+                "',tanggal='" + transaksi.getTanggal() +
+                "',harga='" + transaksi.getHarga() +
+                "',kategori='" + transaksi.getKategori() +
+                "',deskripsi='" + transaksi.getDeskripsi() +
+                "',time=" + transaksi.getTime() +
+                " where idTransaksi='" + transaksi.getIdTransaksi() + "'");
         Toast.makeText(context, "Transaksi berhasil diedit", Toast.LENGTH_SHORT)
                 .show();
     }

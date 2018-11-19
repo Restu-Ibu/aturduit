@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.adapter.HistoryAdapter;
@@ -26,7 +28,7 @@ public class HistoryFragment extends Fragment {
 	// ///
 	public static ListView list;
 	public static ImageButton bBack;
-	public static TextView tTitle1, tTitle2, tTitle3;
+	public static TextView tTitle1, tTitle2, tTitle3, tTitle4;
 	public static HistoryAdapter adapterHistory;
 	public static TransaksiAdapter adapterTransaksi;
 	public static int adapterStatus;
@@ -63,13 +65,13 @@ public class HistoryFragment extends Fragment {
 		tTitle1 = (TextView) rootView.findViewById(R.id.title1);
 		tTitle2 = (TextView) rootView.findViewById(R.id.title2);
 		tTitle3 = (TextView) rootView.findViewById(R.id.title3);
+		tTitle4  = (TextView) rootView.findViewById(R.id.title4);
 		bBack.setVisibility(View.GONE);
 		bBack.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				ArrayList<History> listHistory = new ArrayList<History>();
-				HistoryAdapter adapterHistory;
 
 				//MySQLiteHelper helper = new MySQLiteHelper(getActivity());
 				SQLiteDatabase db = helper.getReadableDatabase();
@@ -82,9 +84,12 @@ public class HistoryFragment extends Fragment {
 
 				HistoryFragment.tTitle1.setText(R.string.title1);
 				HistoryFragment.tTitle2.setText(R.string.title2);
+				HistoryFragment.tTitle2.setGravity(Gravity.CENTER_HORIZONTAL);
 				HistoryFragment.tTitle3.setText(R.string.title3);
+				HistoryFragment.tTitle4.setText(R.string.title4);
 
 				HistoryFragment.bBack.setVisibility(View.GONE);
+
 			}
 		});
 
@@ -112,8 +117,9 @@ public class HistoryFragment extends Fragment {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3) {
 				// TODO Auto-generated method stub
-				if (HistoryFragment.adapterStatus == 1)
+				if (HistoryFragment.adapterStatus == 1){
 					HistoryFragment.adapterHistory.getFilter().filter(arg0);
+				}
 				else
 					HistoryFragment.adapterTransaksi.getFilter().filter(arg0);
 			}
@@ -147,7 +153,9 @@ public class HistoryFragment extends Fragment {
 
 		HistoryFragment.tTitle1.setText(R.string.title1);
 		HistoryFragment.tTitle2.setText(R.string.title2);
+		HistoryFragment.tTitle2.setGravity(Gravity.CENTER_HORIZONTAL);
 		HistoryFragment.tTitle3.setText(R.string.title3);
+		HistoryFragment.tTitle4.setText(R.string.title4);
 
 		HistoryFragment.list.setAdapter(adapterHistory);
 

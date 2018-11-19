@@ -12,6 +12,7 @@
     <string name="app_name">Atur Duit</string>
     <string name="e_price">Harga</string>
     <string name="e_desc">Deskripsi</string>
+    <string name="e_kategori">Kategori</string>
     <string name="btn_save">Save</string>
     <string name="btn_reset">Reset</string>
     <string name="Riwayat">Riwayat</string>
@@ -26,9 +27,19 @@
     <string name="time">Jam</string>
     <string name="jam">Jam</string>
 
+    <!-- kategori -->
+    <string name="kategori1">Makanan dan minuman</string>
+    <string name="kategori2">Transportasi</string>
+    <string name="kategori3">Hiburan</string>
+    <string name="kategori4">Belanjaan</string>
+    <string name="kategori5">Lainnya</string>
+
+
+
     <string name="titikdua">:</string>
     <string name="title2">Total</string>
     <string name="title3">Transaksi</string>
+    <string name="title4">Kategori</string>
     <string name="splash">Splash</string>
     <string name="RiwayatBudget">Riwayat Budget</string>
     <string name="title_add">Masukkan transaksi Anda</string>

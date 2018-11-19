@@ -8,8 +8,10 @@ public class Transaksi {
 	private String tanggal;
 	private long time;
 
+	private String kategori;
+
 	public Transaksi(int idTransaksi, String deskripsi, String harga,
-			String jam, String tanggal, long time) {
+			String jam, String tanggal, long time, String kategori) {
 		super();
 		this.idTransaksi = idTransaksi;
 		this.deskripsi = deskripsi;
@@ -17,6 +19,16 @@ public class Transaksi {
 		this.jam = jam;
 		this.tanggal = tanggal;
 		this.time = time;
+		this.kategori = kategori;
+	}
+
+
+	public String getKategori() {
+		return kategori;
+	}
+
+	public void setKategori(String kategori) {
+		this.kategori = kategori;
 	}
 
 	public long getTime() {

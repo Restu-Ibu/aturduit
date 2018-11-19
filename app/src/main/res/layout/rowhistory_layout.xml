@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:paddingTop="8dp"
-    	android:paddingBottom="8dp" 
+    	android:paddingBottom="8dp"
         android:background="@color/soft_grey"
         android:gravity="center_horizontal" >
 
@@ -22,7 +22,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="left|center_vertical"
             android:paddingLeft="@dimen/activity_vertical_margin"
             android:text="@string/title1"
             android:textColor="#333333" />
@@ -32,7 +32,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="right|center_vertical"
             android:text="@string/title2"
             android:textColor="#333333" />
 
@@ -41,10 +41,138 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
+            android:gravity="right|center_vertical"
             android:paddingRight="@dimen/activity_vertical_margin"
             android:text="@string/title3"
             android:textColor="#333333" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/llKategori1"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/layout_padding_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_food" />
+                <TextView
+                    android:id="@+id/tvKategori1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:layout_gravity="center"
+                    android:textSize="4pt"
+                    android:text="(4)"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llKategori2"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/layout_padding_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_transport" />
+                <TextView
+                    android:id="@+id/tvKategori2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:layout_gravity="center"
+                    android:textSize="4pt"
+                    android:text="(4)"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llKategori3"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/layout_padding_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_entertain" />
+                <TextView
+                    android:id="@+id/tvKategori3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:layout_gravity="center"
+                    android:textSize="4pt"
+                    android:text="(4)"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llKategori4"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/layout_padding_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_groceries" />
+                <TextView
+                    android:id="@+id/tvKategori4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:layout_gravity="center"
+                    android:textSize="4pt"
+                    android:text="(4)"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llKategori5"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/layout_padding_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_others" />
+                <TextView
+                    android:id="@+id/tvKategori5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:layout_gravity="center"
+                    android:textSize="4pt"
+                    android:text="(4)"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
     </TableRow>
 
 </RelativeLayout>
