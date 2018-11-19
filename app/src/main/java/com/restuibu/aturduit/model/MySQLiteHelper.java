@@ -35,8 +35,8 @@ import static com.restuibu.aturduit.util.Constant.DATABASE_VERSION;
 import static com.restuibu.aturduit.util.Constant.TBL_TRANSAKSI;
 import static com.restuibu.aturduit.util.Constant.TBL_BUDGET;
 import static com.restuibu.aturduit.util.Constant.TBL_ALARM;
-import static com.restuibu.aturduit.util.Constant.currentDB;
-import static com.restuibu.aturduit.util.Constant.backupDB;
+import static com.restuibu.aturduit.util.Util.currentDB;
+import static com.restuibu.aturduit.util.Util.backupDB;
 import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
 import static com.restuibu.aturduit.util.Util.exportDB;
 import static com.restuibu.aturduit.util.Util.mAuth;
@@ -148,8 +148,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     // Toast.LENGTH_SHORT).show();
                 }
 
-                Toast.makeText(context, "Budget telah diupdate",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Budget telah diupdate",
+//                        Toast.LENGTH_SHORT).show();
                 break;
             }
 

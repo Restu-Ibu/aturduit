@@ -20,6 +20,7 @@ import com.restuibu.aturduit.adapter.HistoryAdapter;
 import com.restuibu.aturduit.adapter.TransaksiAdapter;
 import com.restuibu.aturduit.model.History;
 import com.restuibu.aturduit.model.MySQLiteHelper;
+import static com.restuibu.aturduit.util.Util.helper;
 
 public class HistoryFragment extends Fragment {
 	// ///
@@ -33,7 +34,6 @@ public class HistoryFragment extends Fragment {
 	private boolean searching = false;
 	private EditText eSearch;
 	private ImageButton bSearch;
-	private MySQLiteHelper helper;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +54,7 @@ public class HistoryFragment extends Fragment {
 //		});
 		
 
-		helper = new MySQLiteHelper(getActivity());
+		//helper = new MySQLiteHelper(getActivity());
 
 		bBack = (ImageButton) rootView.findViewById(R.id.button1);
 		bSearch = (ImageButton) rootView.findViewById(R.id.button2);
@@ -71,9 +71,8 @@ public class HistoryFragment extends Fragment {
 				ArrayList<History> listHistory = new ArrayList<History>();
 				HistoryAdapter adapterHistory;
 
-				MySQLiteHelper helper = new MySQLiteHelper(getActivity());
+				//MySQLiteHelper helper = new MySQLiteHelper(getActivity());
 				SQLiteDatabase db = helper.getReadableDatabase();
-				helper.onCreate(db);
 
 				listHistory = helper.getAllHistory();
 				adapterHistory = new HistoryAdapter(getActivity(), listHistory);

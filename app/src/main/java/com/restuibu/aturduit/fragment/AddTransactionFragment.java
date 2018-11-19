@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,7 +16,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -27,48 +30,52 @@ import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.Transaksi;
 import com.restuibu.aturduit.util.Util;
 
+import static com.restuibu.aturduit.util.Util.helper;
+
+
 public class AddTransactionFragment extends Fragment {
-	private EditText ePrice, eDesc;
+    private EditText ePrice, eDesc;
 
-	public static Button bTimePicker;
-	private Button bDatePicker;
+    public static Button bTimePicker;
+    private Button bDatePicker;
 
-	private Button bSave, bReset;
+    private Button bSave, bReset;
 
-	private MySQLiteHelper helper;
-	private boolean value_text;
-	private boolean value_number;
+    private ImageView[] ivKategori = new ImageView[5];
+    private String category;
 
-	private boolean null_ePrice;
-	private boolean null_eDesc;
+    private boolean value_text;
+    private boolean value_number;
 
-	@SuppressLint("SimpleDateFormat")
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+    private boolean null_ePrice;
+    private boolean null_eDesc;
 
-		View rootView = inflater.inflate(R.layout.fragment_add, container,
-				false);
-		
+    @SuppressLint("SimpleDateFormat")
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_add, container,
+                false);
 
 
-		
-		// add interstitial
-		if (SplashActivity.mInterstitialAd.isLoaded()) {
-			SplashActivity.mInterstitialAd.show();
-		}
-		SplashActivity.mInterstitialAd.setAdListener(new AdListener() {
-			@Override
-			public void onAdClosed() {
-				MainActivity.loadInterstitial(getActivity());
-			}
-		});
 
-		AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
+        // add interstitial
+        if (SplashActivity.mInterstitialAd.isLoaded()) {
+            SplashActivity.mInterstitialAd.show();
+        }
+        SplashActivity.mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                MainActivity.loadInterstitial(getActivity());
+            }
+        });
 
-		// add interstitial
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        // add interstitial
 //		if (SplashActivity.mInterstitialAd.isLoaded()) {
 //			SplashActivity.mInterstitialAd.show();
 //		}
@@ -79,285 +86,353 @@ public class AddTransactionFragment extends Fragment {
 //			}
 //		});
 
-		ePrice = (EditText) rootView.findViewById(R.id.editText1);
-		eDesc = (EditText) rootView.findViewById(R.id.editText2);
-		// eTgl = (EditText) rootView.findViewById(R.id.editText3);
-		// eJam = (EditText) rootView.findViewById(R.id.editText4);
-		bSave = (Button) rootView.findViewById(R.id.button1);
-		bReset = (Button) rootView.findViewById(R.id.button2);
-		bTimePicker = (Button) rootView.findViewById(R.id.button3);
-		bDatePicker = (Button) rootView.findViewById(R.id.button4);
+        ePrice = (EditText) rootView.findViewById(R.id.editText1);
+        eDesc = (EditText) rootView.findViewById(R.id.editText2);
+        // eTgl = (EditText) rootView.findViewById(R.id.editText3);
+        // eJam = (EditText) rootView.findViewById(R.id.editText4);
+        bSave = (Button) rootView.findViewById(R.id.button1);
+        bReset = (Button) rootView.findViewById(R.id.button2);
+        bTimePicker = (Button) rootView.findViewById(R.id.button3);
+        bDatePicker = (Button) rootView.findViewById(R.id.button4);
 
-		helper = new MySQLiteHelper(getActivity());
-		// Toast.makeText(getActivity(),
-		// new
-		// SimpleDateFormat("kk:mm:ss").format(new Date()),
-		// Toast.LENGTH_SHORT).show();
+        ivKategori[0] = (ImageView) rootView.findViewById(R.id.imageViewKategori1);
+        ivKategori[1] = (ImageView) rootView.findViewById(R.id.imageViewKategori2);
+        ivKategori[2] = (ImageView) rootView.findViewById(R.id.imageViewKategori3);
+        ivKategori[3] = (ImageView) rootView.findViewById(R.id.imageViewKategori4);
+        ivKategori[4] = (ImageView) rootView.findViewById(R.id.imageViewKategori5);
 
-		// di onResume, masih bingung kok bisa gitu
-		// eTgl.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-		// eJam.setText(new SimpleDateFormat("kk:mm:ss").format(new Date()));
-		bDatePicker.setText(new SimpleDateFormat("dd/MM/yyyy")
-				.format(new Date()));
+        category = "";
+        ivKategori[0].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
+                category = "Makanan dan minuman";
+                Util.removeOtherCategories(getActivity(), ivKategori, 0);
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-		ePrice.addTextChangedListener(Util.onTextChangedListener(ePrice));
-		// tTimePicker.getCurrentMinute();
-		bTimePicker.setOnClickListener(new View.OnClickListener() {
+        ivKategori[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
+                category = "Transportasi";
+                Util.removeOtherCategories(getActivity(), ivKategori, 1);
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				Util.refreshTimePickerAtAddTransactionFragment();
+        ivKategori[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
+                category = "Hiburan";
+                Util.removeOtherCategories(getActivity(), ivKategori, 2);
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-				LayoutInflater inflater = LayoutInflater.from(getActivity());
-				View dialogview = inflater.inflate(
-						R.layout.alertdialog_timepicker, null);
-				final AlertDialog alert = new AlertDialog.Builder(getActivity())
-						.create();
-				alert.setTitle("Atur Jam");
+        ivKategori[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
+                category = "Belanjaan";
+                Util.removeOtherCategories(getActivity(), ivKategori, 3);
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
+            }
+        });
+        ivKategori[4].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
+                category = "Lainnya";
+                Util.removeOtherCategories(getActivity(), ivKategori, 4);
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-				final TimePicker timePicker = (TimePicker) dialogview
-						.findViewById(R.id.timePicker1);
-				Button bSet = (Button) dialogview.findViewById(R.id.button1);
-				Button bCancel = (Button) dialogview.findViewById(R.id.button2);
 
-				alert.setView(dialogview);
-				alert.show();
 
-				timePicker.setIs24HourView(true);
 
-				bSet.setOnClickListener(new View.OnClickListener() {
+        //helper = new MySQLiteHelper(getActivity());
+        // Toast.makeText(getActivity(),
+        // new
+        // SimpleDateFormat("kk:mm:ss").format(new Date()),
+        // Toast.LENGTH_SHORT).show();
 
-					public void onClick(View arg0) {
-						// TODO Auto-generated method stub
+        // di onResume, masih bingung kok bisa gitu
+        // eTgl.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        // eJam.setText(new SimpleDateFormat("kk:mm:ss").format(new Date()));
+        bDatePicker.setText(new SimpleDateFormat("dd/MM/yyyy")
+                .format(new Date()));
 
-						if ((timePicker.getCurrentHour() < 10)
-								&& (timePicker.getCurrentMinute() > 9)) {
-							bTimePicker.setText("0"
-									+ timePicker.getCurrentHour()
-									+ ":"
-									+ timePicker.getCurrentMinute()
-									+ ":"
-									+ new SimpleDateFormat("ss")
-											.format(new Date()));
-						} else if ((timePicker.getCurrentHour() > 9)
-								&& (timePicker.getCurrentMinute() < 10)) {
-							bTimePicker.setText(timePicker.getCurrentHour()
-									+ ":0"
-									+ timePicker.getCurrentMinute()
-									+ ":"
-									+ new SimpleDateFormat("ss")
-											.format(new Date()));
+        ePrice.addTextChangedListener(Util.onTextChangedListener(ePrice));
+        // tTimePicker.getCurrentMinute();
+        bTimePicker.setOnClickListener(new View.OnClickListener() {
 
-						} else if ((timePicker.getCurrentHour() < 10)
-								&& (timePicker.getCurrentMinute() < 10)) {
-							bTimePicker.setText("0"
-									+ timePicker.getCurrentHour()
-									+ ":0"
-									+ +timePicker.getCurrentMinute()
-									+ ":"
-									+ new SimpleDateFormat("ss")
-											.format(new Date()));
-						} else {
-							bTimePicker.setText(""
-									+ timePicker.getCurrentHour()
-									+ ":"
-									+ +timePicker.getCurrentMinute()
-									+ ":"
-									+ new SimpleDateFormat("ss")
-											.format(new Date()));
-						}
-						alert.dismiss();
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Util.refreshTimePickerAtAddTransactionFragment();
 
-					}
-				});
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                View dialogview = inflater.inflate(
+                        R.layout.alertdialog_timepicker, null);
+                final AlertDialog alert = new AlertDialog.Builder(getActivity())
+                        .create();
+                alert.setTitle("Atur Jam");
 
-				bCancel.setOnClickListener(new View.OnClickListener() {
+                final TimePicker timePicker = (TimePicker) dialogview
+                        .findViewById(R.id.timePicker1);
+                Button bSet = (Button) dialogview.findViewById(R.id.button1);
+                Button bCancel = (Button) dialogview.findViewById(R.id.button2);
 
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						alert.dismiss();
-					}
-				});
+                alert.setView(dialogview);
+                alert.show();
 
-			}
-		});
+                timePicker.setIs24HourView(true);
 
-		bDatePicker.setOnClickListener(new View.OnClickListener() {
+                bSet.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Util.refreshTimePickerAtAddTransactionFragment();
+                    public void onClick(View arg0) {
+                        // TODO Auto-generated method stub
 
-				LayoutInflater inflater = LayoutInflater.from(getActivity());
-				View dialogview = inflater.inflate(
-						R.layout.alertdialog_datepicker, null);
-				final AlertDialog alert = new AlertDialog.Builder(getActivity())
-						.create();
-				alert.setTitle("Atur Tanggal");
+                        if ((timePicker.getCurrentHour() < 10)
+                                && (timePicker.getCurrentMinute() > 9)) {
+                            bTimePicker.setText("0"
+                                    + timePicker.getCurrentHour()
+                                    + ":"
+                                    + timePicker.getCurrentMinute()
+                                    + ":"
+                                    + new SimpleDateFormat("ss")
+                                    .format(new Date()));
+                        } else if ((timePicker.getCurrentHour() > 9)
+                                && (timePicker.getCurrentMinute() < 10)) {
+                            bTimePicker.setText(timePicker.getCurrentHour()
+                                    + ":0"
+                                    + timePicker.getCurrentMinute()
+                                    + ":"
+                                    + new SimpleDateFormat("ss")
+                                    .format(new Date()));
 
-				final DatePicker datePicker = (DatePicker) dialogview
-						.findViewById(R.id.datePicker1);
-				Button bSet = (Button) dialogview.findViewById(R.id.button1);
-				Button bCancel = (Button) dialogview.findViewById(R.id.button2);
+                        } else if ((timePicker.getCurrentHour() < 10)
+                                && (timePicker.getCurrentMinute() < 10)) {
+                            bTimePicker.setText("0"
+                                    + timePicker.getCurrentHour()
+                                    + ":0"
+                                    + +timePicker.getCurrentMinute()
+                                    + ":"
+                                    + new SimpleDateFormat("ss")
+                                    .format(new Date()));
+                        } else {
+                            bTimePicker.setText(""
+                                    + timePicker.getCurrentHour()
+                                    + ":"
+                                    + +timePicker.getCurrentMinute()
+                                    + ":"
+                                    + new SimpleDateFormat("ss")
+                                    .format(new Date()));
+                        }
+                        alert.dismiss();
 
-				alert.setView(dialogview);
-				alert.show();
+                    }
+                });
 
-				bSet.setOnClickListener(new View.OnClickListener() {
+                bCancel.setOnClickListener(new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        alert.dismiss();
+                    }
+                });
 
-						if ((datePicker.getDayOfMonth() < 10)
-								&& (datePicker.getMonth() + 1 > 9))
-							bDatePicker.setText("0"
-									+ Integer.toString(datePicker
-											.getDayOfMonth()) + "/"
-									+ Integer.toString(datePicker.getMonth())
-									+ "/"
-									+ Integer.toString(datePicker.getYear()));
-						else if ((datePicker.getDayOfMonth() > 9)
-								&& (datePicker.getMonth() + 1 < 10))
-							bDatePicker.setText(Integer.toString(datePicker
-									.getDayOfMonth())
-									+ "/0"
-									+ Integer.toString(datePicker.getMonth() + 1)
-									+ "/"
-									+ Integer.toString(datePicker.getYear()));
-						else if ((datePicker.getDayOfMonth() < 10)
-								&& (datePicker.getMonth() + 1 < 10))
-							bDatePicker.setText("0"
-									+ Integer.toString(datePicker
-											.getDayOfMonth())
-									+ "/0"
-									+ Integer.toString(datePicker.getMonth() + 1)
-									+ "/"
-									+ Integer.toString(datePicker.getYear()));
+            }
+        });
 
-						else {
-							bDatePicker.setText(Integer.toString(datePicker
-									.getDayOfMonth())
-									+ "/"
-									+ Integer.toString(datePicker.getMonth() + 1)
-									+ "/"
-									+ Integer.toString(datePicker.getYear()));
-						}
-						alert.dismiss();
-					}
-				});
-				bCancel.setOnClickListener(new View.OnClickListener() {
+        bDatePicker.setOnClickListener(new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						alert.dismiss();
-					}
-				});
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Util.refreshTimePickerAtAddTransactionFragment();
 
-		eDesc.addTextChangedListener(new TextWatcher() {
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                View dialogview = inflater.inflate(
+                        R.layout.alertdialog_datepicker, null);
+                final AlertDialog alert = new AlertDialog.Builder(getActivity())
+                        .create();
+                alert.setTitle("Atur Tanggal");
 
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {
-				// TODO Auto-generated method stub
-				eDesc.setError(null);
-			}
+                final DatePicker datePicker = (DatePicker) dialogview
+                        .findViewById(R.id.datePicker1);
+                Button bSet = (Button) dialogview.findViewById(R.id.button1);
+                Button bCancel = (Button) dialogview.findViewById(R.id.button2);
 
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3) {
-				// TODO Auto-generated method stub
+                alert.setView(dialogview);
+                alert.show();
 
-			}
+                bSet.setOnClickListener(new View.OnClickListener() {
 
-			public void afterTextChanged(Editable arg0) {
-				// TODO Auto-generated method stub
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
 
-			}
-		});
+                        if ((datePicker.getDayOfMonth() < 10)
+                                && (datePicker.getMonth() + 1 > 9))
+                            bDatePicker.setText("0"
+                                    + Integer.toString(datePicker
+                                    .getDayOfMonth()) + "/"
+                                    + Integer.toString(datePicker.getMonth())
+                                    + "/"
+                                    + Integer.toString(datePicker.getYear()));
+                        else if ((datePicker.getDayOfMonth() > 9)
+                                && (datePicker.getMonth() + 1 < 10))
+                            bDatePicker.setText(Integer.toString(datePicker
+                                    .getDayOfMonth())
+                                    + "/0"
+                                    + Integer.toString(datePicker.getMonth() + 1)
+                                    + "/"
+                                    + Integer.toString(datePicker.getYear()));
+                        else if ((datePicker.getDayOfMonth() < 10)
+                                && (datePicker.getMonth() + 1 < 10))
+                            bDatePicker.setText("0"
+                                    + Integer.toString(datePicker
+                                    .getDayOfMonth())
+                                    + "/0"
+                                    + Integer.toString(datePicker.getMonth() + 1)
+                                    + "/"
+                                    + Integer.toString(datePicker.getYear()));
 
-		bSave.setOnClickListener(new View.OnClickListener() {
+                        else {
+                            bDatePicker.setText(Integer.toString(datePicker
+                                    .getDayOfMonth())
+                                    + "/"
+                                    + Integer.toString(datePicker.getMonth() + 1)
+                                    + "/"
+                                    + Integer.toString(datePicker.getYear()));
+                        }
+                        alert.dismiss();
+                    }
+                });
+                bCancel.setOnClickListener(new View.OnClickListener() {
 
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        alert.dismiss();
+                    }
+                });
+            }
+        });
 
-				null_ePrice = false;
-				null_eDesc = false;
-				value_text = true;
-				value_number = true;
+        eDesc.addTextChangedListener(new TextWatcher() {
 
-				String ePrice_ = ePrice.getText().toString().replaceAll("\\W", "");
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+                                      int arg3) {
+                // TODO Auto-generated method stub
+                eDesc.setError(null);
+            }
 
-				if ((ePrice.getText().length() == 0)) {
-					ePrice.setError("Must be fill.");
-					null_ePrice = true;
-				}
-				if ((eDesc.getText().length() == 0)) {
-					eDesc.setError("Must be fill.");
-					null_eDesc = true;
-				}
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                                          int arg2, int arg3) {
+                // TODO Auto-generated method stub
 
-				if (!null_ePrice && !null_eDesc) {
-					if (!eDesc.getText().toString()
-							.matches("[a-zA-Z 0123456789 .,+]+")) {
-						eDesc.setError("Accept Alphabets Only.");
-						value_text = false;
-					}
-					if (!ePrice_.matches("[0123456789]+")) {
-						ePrice.setError("Accept Numeric Only.");
-						value_number = false;
-					}
+            }
 
-					if (value_number && value_text) {
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
 
-						Date dt = new Date();
+            }
+        });
 
-						Transaksi trans = new Transaksi(0, eDesc.getText()
-								.toString(), ePrice_,
-								bTimePicker.getText().toString(), bDatePicker
-										.getText().toString(), dt.getTime());
-						helper.addTransaksi(trans);
+        bSave.setOnClickListener(new View.OnClickListener() {
 
-						helper.updateBudgetByDate(bDatePicker.getText()
-								.toString()
-								+ " "
-								+ bTimePicker.getText().toString(),
-								Long.parseLong(ePrice_)
-										* (-1));
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
 
-						ePrice.setText("");
-						eDesc.setText("");
-						ePrice.requestFocus();
+                null_ePrice = false;
+                null_eDesc = false;
 
-					}
+                value_text = true;
+                value_number = true;
 
-				}
+                String ePrice_ = ePrice.getText().toString().replaceAll("\\W", "");
 
-			}
-		});
+                if ((ePrice.getText().length() == 0)) {
+                    ePrice.setError("Must be fill.");
+                    null_ePrice = true;
+                }
+                if ((eDesc.getText().length() == 0)) {
+                    eDesc.setError("Must be fill.");
+                    null_eDesc = true;
+                }
 
-		bReset.setOnClickListener(new View.OnClickListener() {
+                if (!null_ePrice && !null_eDesc) {
+                    if (!eDesc.getText().toString()
+                            .matches("[a-zA-Z 0123456789 .,+]+")) {
+                        eDesc.setError("Accept Alphabets Only.");
+                        value_text = false;
+                    }
+                    if (!ePrice_.matches("[0123456789]+")) {
+                        ePrice.setError("Accept Numeric Only.");
+                        value_number = false;
+                    }
 
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
+                    if (category.equals("")){
+                        Toast.makeText(getActivity(), "Mohon pilih kategori terlebih dahulu", Toast.LENGTH_SHORT).show();
+                    }
 
-				ePrice.setText("");
-				eDesc.setText("");
-				ePrice.requestFocus();
+                    if (value_number && value_text && !category.equals("")) {
 
-			}
-		});
-		return rootView;
-	}
+                        Date dt = new Date();
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		// eTgl.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-		Util.refreshTimePickerAtAddTransactionFragment();
-	}
+                        Transaksi trans = new Transaksi(0, eDesc.getText()
+                                .toString(), ePrice_,
+                                bTimePicker.getText().toString(), bDatePicker
+                                .getText().toString(), dt.getTime());
+                        helper.addTransaksi(trans);
+
+                        helper.updateBudgetByDate(bDatePicker.getText()
+                                        .toString()
+                                        + " "
+                                        + bTimePicker.getText().toString(),
+                                Long.parseLong(ePrice_)
+                                        * (-1));
+
+                        ePrice.setText("");
+                        eDesc.setText("");
+                        category = "";
+                        Util.removeOtherCategories(getActivity(), ivKategori, -1);
+                        ePrice.requestFocus();
+
+                    }
+
+                }
+
+            }
+        });
+
+        bReset.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+
+                ePrice.setText("");
+                eDesc.setText("");
+                category = "";
+                Util.removeOtherCategories(getActivity(), ivKategori, -1);
+                ePrice.requestFocus();
+
+            }
+        });
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // eTgl.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        Util.refreshTimePickerAtAddTransactionFragment();
+    }
 }

@@ -79,8 +79,8 @@
     <string name="info_copyright">Copyright © 2018 by Restu Ibu\nAtur Duit 1.1</string>
 
 
-    <string name="banner_ad_unit_id">ca-app-pub-6657666130252014/7859784872</string>
-    <string name="interstitial_ad_unit_id">ca-app-pub-6657666130252014/8402680470</string>
+    <string name="banner_ad_unit_id">ca-app-pub-6657666130252014/7859784872-</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-6657666130252014/8402680470-</string>
 
     <!-- activity_about -->
     <string name="about">Restu Ibu rilis aplikasi lagi nih, namanya Atur Duit (remake dari Cost Tracker).

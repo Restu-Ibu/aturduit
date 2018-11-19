@@ -3,6 +3,7 @@ package com.restuibu.aturduit.util;
 import android.os.Environment;
 
 import com.restuibu.aturduit.R;
+import com.restuibu.aturduit.model.MySQLiteHelper;
 
 import java.io.File;
 
@@ -15,9 +16,7 @@ public class Constant {
     public static final String TBL_BUDGET = "tbl_budget";
     public static final String TBL_ALARM = "tbl_alarm";
 
-    // export import db
-    public static File currentDB = null;
-    public static File backupDB = null;
+
 
 
     public static final String privacyPolicyUrl = "http://guekeloe.blogspot.com/2018/10/atur-duit.html";

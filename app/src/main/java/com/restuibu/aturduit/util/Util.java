@@ -32,6 +32,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
@@ -49,6 +50,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TimePicker;
@@ -80,11 +82,15 @@ import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.OptionItem;
 
-import static com.restuibu.aturduit.util.Constant.backupDB;
-import static com.restuibu.aturduit.util.Constant.currentDB;
 
 public class Util {
     private static ProgressDialog pd;
+
+    // db
+    public static MySQLiteHelper helper;
+    // export import db
+    public static File currentDB = null;
+    public static File backupDB = null;
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -643,6 +649,8 @@ public class Util {
 
                         if(!fromSignIn){
                             Util.restart(c);
+                        } else {
+                            helper = new MySQLiteHelper(c);
                         }
 
 
@@ -673,8 +681,7 @@ public class Util {
                         Toast.makeText(c, "Database tidak ditemukan di cloud",
                                 Toast.LENGTH_SHORT).show();
 
-                        MySQLiteHelper helper = new MySQLiteHelper(
-                                c);
+                        helper = new MySQLiteHelper(c);
                         helper.resetDatabase();
 
                     } catch (IOException e) {
@@ -771,6 +778,13 @@ public class Util {
                 s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
                 budgetMenu.setTitle(s);
             }
+        }
+    }
+
+    public static void removeOtherCategories(Context c, ImageView[] iv, int id){
+        for (int i=0; i<5; i++){
+            if (i != id)
+                iv[i].setBackgroundColor(0);
         }
     }
 

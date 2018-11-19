@@ -51,8 +51,10 @@ import java.util.Locale;
 
 import static android.widget.ArrayAdapter.createFromResource;
 import static com.restuibu.aturduit.util.Constant.DATABASE_NAME;
-import static com.restuibu.aturduit.util.Constant.backupDB;
-import static com.restuibu.aturduit.util.Constant.currentDB;
+
+import static com.restuibu.aturduit.util.Util.backupDB;
+import static com.restuibu.aturduit.util.Util.currentDB;
+import static com.restuibu.aturduit.util.Util.helper;
 import static com.restuibu.aturduit.util.Util.changeBudgetTitle;
 import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
 import static com.restuibu.aturduit.util.Util.exportDB;
@@ -66,7 +68,7 @@ public class MainActivity extends Activity {
     private Fragment addTransactionFragment = new AddTransactionFragment();
     private Fragment historyFragment = new HistoryFragment();
     private Fragment statisticFragment = new StatisticFragment();
-    private MySQLiteHelper helper;
+
     private Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,6 @@ public class MainActivity extends Activity {
 		 * // Screen handling while hiding Actionbar title.
 		 * actionBar.setDisplayShowTitleEnabled(false);
 		 */
-
 
         // Creating ActionBar tabs.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

@@ -46,11 +46,12 @@ import com.restuibu.aturduit.custom.XYMarkerView;
 import com.restuibu.aturduit.custom.YearAxisValueFormatter;
 import com.restuibu.aturduit.model.History;
 import com.restuibu.aturduit.model.MySQLiteHelper;
+import static com.restuibu.aturduit.util.Util.helper;
 
 import static com.restuibu.aturduit.util.Util.getDayOfYear;
 
 public class StatisticFragment extends Fragment implements OnChartValueSelectedListener {
-    private MySQLiteHelper helper;
+
     private ArrayList<History> listHistory = new ArrayList<History>();
     private BarChart mChart;
     private LineChart mChart2;
@@ -94,7 +95,7 @@ public class StatisticFragment extends Fragment implements OnChartValueSelectedL
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        helper = new MySQLiteHelper(getActivity());
+        //helper = new MySQLiteHelper(getActivity());
 
         Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
         Spinner spinner2 = (Spinner) rootView.findViewById(R.id.spinner2);
