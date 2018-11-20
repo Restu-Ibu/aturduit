@@ -33,10 +33,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,9 +85,15 @@ import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.OptionItem;
 
+import static com.restuibu.aturduit.util.Constant.PERMISSIONS_STORAGE;
+import static com.restuibu.aturduit.util.Constant.REQUEST_EXTERNAL_STORAGE;
+
 
 public class Util {
     private static ProgressDialog pd;
+
+    // menu
+    public static Menu menu;
 
     // db
     public static MySQLiteHelper helper;
@@ -92,15 +101,10 @@ public class Util {
     public static File currentDB = null;
     public static File backupDB = null;
 
-    // Storage Permissions
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
     public static FirebaseAuth mAuth;
     public static GoogleSignInClient mGoogleSignInClient;
+
+    public static GestureDetectorCompat gestureDetectorCompat;
 
     public static void signOut(final Activity activity) {
         // Firebase sign out
@@ -490,28 +494,6 @@ public class Util {
             return false;
         }
 
-        // MySQLiteHelper helper = new MySQLiteHelper(context);
-        // if (helper.getDetailLastBudget() != null) {
-        // Budget budget = helper.getDetailLastBudget();
-        //
-        //
-        // Date nowDate;
-        // try {
-        // nowDate = sdf.parse(sdf.format((new Date())));
-        // Date startDate = sdf.parse(budget.getStartDate());
-        // Date endDate = sdf.parse(budget.getEndDate());
-        //
-        // return (nowDate.after(startDate) && nowDate.before(endDate))
-        // || (nowDate.equals(startDate))
-        // || (nowDate.equals(endDate));
-        // } catch (ParseException e) {
-        // // TODO Auto-generated catch block
-        // return false;
-        // }
-        //
-        // } else {
-        // return false;
-        // }
     }
 
     public static void updateWidget(Context context) {
@@ -764,7 +746,8 @@ public class Util {
         });
     }
 
-    public static void changeBudgetTitle(Context c, Menu menu){
+    public static void changeBudgetTitle(Context c){
+
         if(menu != null){
             MenuItem budgetMenu = menu.findItem(R.id.budget);
 
@@ -774,11 +757,25 @@ public class Util {
                 budgetMenu.setTitle(s);
 
             } else {
-                SpannableString s = new SpannableString("BUDGET SET");
-                s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
-                budgetMenu.setTitle(s);
+                updateBudgetActionBar();
             }
         }
+    }
+
+    public static void updateBudgetActionBar(){
+        MenuItem budgetMenu = menu.findItem(R.id.budget);
+        String budgetLeft = helper.getDetailLastBudget().getLeft();
+        Log.e("budget left", budgetLeft);
+
+        SpannableString s = new SpannableString(Util.formatUang(budgetLeft));
+
+        s.setSpan(new RelativeSizeSpan(1.5f), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (Long.parseLong(budgetLeft) < 0){
+            s.setSpan(new ForegroundColorSpan(Color.RED), 0, s.length(), 0);
+        }
+
+        budgetMenu.setTitle(s);
     }
 
     public static void removeOtherCategories(Context c, ImageView[] iv, int id){

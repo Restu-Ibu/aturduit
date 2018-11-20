@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,10 +14,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -28,11 +29,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.restuibu.aturduit.fragment.AddTransactionFragment;
 import com.restuibu.aturduit.fragment.HistoryFragment;
 import com.restuibu.aturduit.R;
@@ -41,6 +37,7 @@ import com.restuibu.aturduit.adapter.TabListener;
 import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.util.Util;
+import static com.restuibu.aturduit.util.Util.menu;
 
 import java.io.File;
 import java.text.ParseException;
@@ -52,6 +49,7 @@ import java.util.Locale;
 import static android.widget.ArrayAdapter.createFromResource;
 import static com.restuibu.aturduit.util.Constant.DATABASE_NAME;
 
+import static com.restuibu.aturduit.util.Constant.MIN_DISTANCE;
 import static com.restuibu.aturduit.util.Util.backupDB;
 import static com.restuibu.aturduit.util.Util.currentDB;
 import static com.restuibu.aturduit.util.Util.helper;
@@ -60,7 +58,7 @@ import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
 import static com.restuibu.aturduit.util.Util.exportDB;
 import static com.restuibu.aturduit.util.Util.importDB;
 import static com.restuibu.aturduit.util.Util.mAuth;
-import static com.restuibu.aturduit.util.Util.verifyStoragePermissions;
+import static com.restuibu.aturduit.util.Util.updateBudgetActionBar;
 
 public class MainActivity extends Activity {
     private ActionBar.Tab AddTransactionFragmentTab, HistoryFragmentTab,
@@ -69,7 +67,8 @@ public class MainActivity extends Activity {
     private Fragment historyFragment = new HistoryFragment();
     private Fragment statisticFragment = new StatisticFragment();
 
-    private Menu menu;
+    private float x1 , x2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +104,9 @@ public class MainActivity extends Activity {
 		 * actionBar.setDisplayShowTitleEnabled(false);
 		 */
 
+
+
+
         // Creating ActionBar tabs.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setTitle("");
@@ -128,31 +130,15 @@ public class MainActivity extends Activity {
         actionBar.addTab(HistoryFragmentTab);
         actionBar.addTab(StatisticFragmentTab);
 
-		/*
-		 * // Initilization viewPager = (ViewPager) findViewById(R.id.pager);
-		 * actionBar = getActionBar(); mAdapter = new
-		 * TabsPagerAdapter(getSupportFragmentManager());
-		 * 
-		 * viewPager.setAdapter(mAdapter);
-		 * actionBar.setHomeButtonEnabled(false);
-		 * actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		 * 
-		 * actionBar.addTab(actionBar.newTab().setTabListener(this)
-		 * .setIcon(R.drawable.add));
-		 * actionBar.addTab(actionBar.newTab().setTabListener(this)
-		 * .setIcon(R.drawable.history));
-		 * actionBar.addTab(actionBar.newTab().setTabListener(this)
-		 * .setIcon(R.drawable.statistic));
-		 */
 
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        getMenuInflater().inflate(R.menu.main, menu);
+    public boolean onCreateOptionsMenu(Menu menu_) {
+        menu = menu_;
+        getMenuInflater().inflate(R.menu.main, menu_);
 
-        changeBudgetTitle(MainActivity.this, menu);
+        changeBudgetTitle(MainActivity.this);
         return true;
     }
 
@@ -294,7 +280,7 @@ public class MainActivity extends Activity {
 
                         helper.addBudget(budget);
 
-                        changeBudgetTitle(MainActivity.this, menu);
+                        changeBudgetTitle(MainActivity.this);
 
                         alert.dismiss();
                     }
@@ -381,6 +367,8 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "Total Budget dan sisa Budget telah diubah", Toast.LENGTH_LONG).show();
                     alert.dismiss();
                 }
+
+                updateBudgetActionBar();
             }
         });
 
@@ -409,6 +397,8 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "Total Budget dan sisa Budget telah diubah", Toast.LENGTH_LONG).show();
                     alert.dismiss();
                 }
+
+                updateBudgetActionBar();
             }
         });
 
@@ -476,7 +466,7 @@ public class MainActivity extends Activity {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 // TODO Auto-generated method stub
                                 helper.deleteBudget(budget.getIdBudget());
-                                changeBudgetTitle(MainActivity.this, menu);
+                                changeBudgetTitle(MainActivity.this);
                                 showAlertInsertBudget();
 
                             }
@@ -552,5 +542,46 @@ public class MainActivity extends Activity {
         AdRequest adRequest = new AdRequest.Builder().build();
         SplashActivity.mInterstitialAd.loadAd(adRequest);
     }
+
+    public void displayMessage(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+        AddTransactionFragment fragment = new AddTransactionFragment();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.frameLayout1, fragment); // f2_container is your FrameLayout container
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                x1 = event.getX();
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                x2 = event.getX();
+//                float deltaX = x2 - x1;
+//
+//                if (Math.abs(deltaX) > MIN_DISTANCE) {
+//                    // Left to Right swipe action
+//                    if (x2 > x1) {
+//                        Toast.makeText(this, "Left to Right swipe [Next]", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    // Right to left swipe action
+//                    else {
+//                        Toast.makeText(this, "Right to Left swipe [Previous]", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                } else {
+//                    // consider as something else - a screen tap for example
+//                }
+//                break;
+//        }
+//        return super.onTouchEvent(event);
+//
+//    }
 
 }

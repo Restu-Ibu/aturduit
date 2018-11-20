@@ -15,13 +15,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.adapter.HistoryAdapter;
 import com.restuibu.aturduit.adapter.TransaksiAdapter;
 import com.restuibu.aturduit.model.History;
-import com.restuibu.aturduit.model.MySQLiteHelper;
+
 import static com.restuibu.aturduit.util.Util.helper;
 
 public class HistoryFragment extends Fragment {
@@ -44,19 +43,6 @@ public class HistoryFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_history, container,
 				false);
 
-//		// add interstitial
-//		if (SplashActivity.mInterstitialAd.isLoaded()) {
-//			SplashActivity.mInterstitialAd.show();
-//		}
-//		SplashActivity.mInterstitialAd.setAdListener(new AdListener() {
-//			@Override
-//			public void onAdClosed() {
-//				MainActivity.loadInterstitial(getActivity());
-//			}
-//		});
-		
-
-		//helper = new MySQLiteHelper(getActivity());
 
 		bBack = (ImageButton) rootView.findViewById(R.id.button1);
 		bSearch = (ImageButton) rootView.findViewById(R.id.button2);

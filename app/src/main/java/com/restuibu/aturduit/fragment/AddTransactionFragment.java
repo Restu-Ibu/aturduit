@@ -26,12 +26,11 @@ import com.google.android.gms.ads.AdView;
 import com.restuibu.aturduit.R;
 import com.restuibu.aturduit.activity.MainActivity;
 import com.restuibu.aturduit.activity.SplashActivity;
-import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.Transaksi;
 import com.restuibu.aturduit.util.Util;
 
 import static com.restuibu.aturduit.util.Util.helper;
-
+import static com.restuibu.aturduit.util.Util.updateBudgetActionBar;
 
 public class AddTransactionFragment extends Fragment {
     private EditText ePrice, eDesc;
@@ -49,6 +48,8 @@ public class AddTransactionFragment extends Fragment {
 
     private boolean null_ePrice;
     private boolean null_eDesc;
+
+
 
     @SuppressLint("SimpleDateFormat")
     @Override
@@ -70,6 +71,8 @@ public class AddTransactionFragment extends Fragment {
                 MainActivity.loadInterstitial(getActivity());
             }
         });
+
+
 
         AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -400,6 +403,8 @@ public class AddTransactionFragment extends Fragment {
                                 Long.parseLong(ePrice_)
                                         * (-1));
 
+
+
                         ePrice.setText("");
                         eDesc.setText("");
                         category = "";
@@ -428,6 +433,8 @@ public class AddTransactionFragment extends Fragment {
         });
         return rootView;
     }
+
+
 
     @Override
     public void onResume() {

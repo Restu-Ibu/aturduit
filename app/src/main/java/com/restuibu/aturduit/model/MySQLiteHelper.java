@@ -40,6 +40,7 @@ import static com.restuibu.aturduit.util.Util.backupDB;
 import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
 import static com.restuibu.aturduit.util.Util.exportDB;
 import static com.restuibu.aturduit.util.Util.mAuth;
+import static com.restuibu.aturduit.util.Util.updateBudgetActionBar;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
@@ -77,6 +78,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 + " jam text NOT NULL," + " tanggal date NOT NULL,"
                 + " time timestamp NOT NULL)";
 
+        // ID = 1 utk pagi
+        // ID = 2 utk siang
+        // ID = 3 utk malem
         String tbl_alarm = "CREATE TABLE IF not exists tbl_alarm ("
                 + " idAlarm integer PRIMARY KEY AUTOINCREMENT,"
                 + " time integer NOT NULL," + " isRepeat integer NOT NULL)";
@@ -89,6 +93,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // after update but for new users (newVersion == 2)
         db.execSQL("ALTER TABLE tbl_transaksi ADD COLUMN kategori TEXT");
         db.execSQL("UPDATE tbl_transaksi SET kategori = 'Lainnya' WHERE kategori IS NULL OR kategori =''");
+
+        // after update but for new users (newVersion == 3)
+        db.execSQL("INSERT INTO tbl_alarm VALUES (0, 0)");
+        db.execSQL("INSERT INTO tbl_alarm VALUES (0, 0)");
+        db.execSQL("INSERT INTO tbl_alarm VALUES (0, 0)");
     }
 
     @Override
@@ -96,6 +105,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         if(newVersion == 2){
             db.execSQL("ALTER TABLE tbl_transaksi ADD COLUMN kategori TEXT");
             db.execSQL("UPDATE tbl_transaksi SET kategori = 'Lainnya' WHERE kategori IS NULL OR kategori =''");
+        }
+
+        if(newVersion == 3){
+            db.execSQL("INSERT INTO tbl_alarm VALUES (1, 0, 0)");
+            db.execSQL("INSERT INTO tbl_alarm VALUES (2, 0, 0)");
+            db.execSQL("INSERT INTO tbl_alarm VALUES (3, 0, 0)");
         }
 
         exportDB(context, 1, false);
@@ -133,23 +148,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         for (int i = 0; i < budgets.size(); i++) {
             if (Util.checkTransactionDateInBudget(tglTime, budgets.get(i))) {
+
                 if (amount < 0) {
                     amount = Math.abs(amount);
-
                     updateBudgetDifference(budgets.get(i).getIdBudget(), amount);
-                    // Toast.makeText(context,
-                    // "diff" + budgets.get(i).getIdBudget(),
-                    // Toast.LENGTH_SHORT).show();
                 } else {
                     amount = Math.abs(amount);
                     updateBudgetSum(budgets.get(i).getIdBudget(), amount);
-                    // Toast.makeText(context,
-                    // "sum" + budgets.get(i).getIdBudget(),
-                    // Toast.LENGTH_SHORT).show();
                 }
+                updateBudgetActionBar();
 
-//                Toast.makeText(context, "Budget telah diupdate",
-//                        Toast.LENGTH_SHORT).show();
                 break;
             }
 
