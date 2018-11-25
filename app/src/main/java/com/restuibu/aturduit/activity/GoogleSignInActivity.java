@@ -53,7 +53,7 @@ public class GoogleSignInActivity extends Activity implements
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_googlesignin);
 
-        verifyStoragePermissions(GoogleSignInActivity.this);
+
 
         // Views
         mStatusTextView = findViewById(R.id.status);
@@ -81,6 +81,8 @@ public class GoogleSignInActivity extends Activity implements
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
+
+        verifyStoragePermissions(GoogleSignInActivity.this);
     }
 
     // [START on_start_check_user]

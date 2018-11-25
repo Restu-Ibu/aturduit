@@ -95,9 +95,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("UPDATE tbl_transaksi SET kategori = 'Lainnya' WHERE kategori IS NULL OR kategori =''");
 
         // after update but for new users (newVersion == 3)
-        db.execSQL("INSERT INTO tbl_alarm VALUES (0, 0)");
-        db.execSQL("INSERT INTO tbl_alarm VALUES (0, 0)");
-        db.execSQL("INSERT INTO tbl_alarm VALUES (0, 0)");
+        db.execSQL("INSERT INTO tbl_alarm VALUES (1, 9, 0)");
+        db.execSQL("INSERT INTO tbl_alarm VALUES (2, 14, 0)");
+        db.execSQL("INSERT INTO tbl_alarm VALUES (3, 20, 0)");
     }
 
     @Override
@@ -108,13 +108,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         }
 
         if(newVersion == 3){
-            db.execSQL("INSERT INTO tbl_alarm VALUES (1, 0, 0)");
-            db.execSQL("INSERT INTO tbl_alarm VALUES (2, 0, 0)");
-            db.execSQL("INSERT INTO tbl_alarm VALUES (3, 0, 0)");
+            db.execSQL("INSERT INTO tbl_alarm VALUES (1, 9, 0)");
+            db.execSQL("INSERT INTO tbl_alarm VALUES (2, 14, 0)");
+            db.execSQL("INSERT INTO tbl_alarm VALUES (3, 20, 0)");
         }
 
         exportDB(context, 1, false);
     }
+
+    public void updateBlankCategory() {
+        if(DATABASE_VERSION >= 2){
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("UPDATE tbl_transaksi SET kategori = 'Lainnya' WHERE kategori IS NULL OR kategori =''");
+        }
+    }
+
     public Budget getDetailBudget(int idBudget) {
         String query = "select * from tbl_budget where idBudget=" + idBudget;
 
@@ -432,12 +440,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public ArrayList<History> getAllHistory() {
         ArrayList<History> history = new ArrayList<History>();
-        // 1. build the query
-        // String query = "select * from tbl_friendlist";
-
-        //String query = "select distinct tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by time asc";
-
-
 
         String query = ""
                 + "SELECT "
@@ -675,6 +677,36 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 .show();
     }
 
+    public void updateReminder(Alarm alarm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("update tbl_alarm set " +
+                "time =" + alarm.getTime() +
+                ",isRepeat =" + alarm.getIsRepeat() +
+                " where idAlarm=" + alarm.getIdAlarm() + "");
+    }
+    public ArrayList<Alarm> getAllReminder() {
+        ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+
+        String query = "SELECT * FROM tbl_alarm";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build book and add it to list
+        Alarm alarm = null;
+        if (cursor.moveToFirst()) {
+            do {
+                alarm = new Alarm(Integer.parseInt(cursor.getString(0)),
+                        Integer.parseInt(cursor.getString(1)),
+                        Integer.parseInt(cursor.getString(2)));
+                alarms.add(alarm);
+
+            } while (cursor.moveToNext());
+        }
+
+        return alarms;
+    }
 
 
 

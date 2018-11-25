@@ -9,6 +9,13 @@ import com.restuibu.aturduit.model.MySQLiteHelper;
 import java.io.File;
 
 public class Constant {
+    // notif
+    public static final String NOTIFICATION_CHANNEL_ID = "12345";
+    public static final String NOTIFICATION_CHANNEL_NAME = "12345-name";
+    public static final int NOTIFICATION_MORNING = 1;
+    public static final int NOTIFICATION_NOON = 2;
+    public static final int NOTIFICATION_NIGHT = 3;
+
     // Database Version
     public static final int DATABASE_VERSION = 3;
     // Database Name

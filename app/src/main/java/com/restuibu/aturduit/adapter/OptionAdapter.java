@@ -73,7 +73,7 @@ public class OptionAdapter extends BaseAdapter implements Filterable {
 
 		final OptionItem row = OptionItems.get(position);
 
-		viewHolder.tvLabel.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5);
+		viewHolder.tvLabel.setTextSize(TypedValue.COMPLEX_UNIT_PT, 7);
 		viewHolder.tvLabel.setText(row.getName());
 
 		viewHolder.ivIcon.setImageResource(row.getImg());

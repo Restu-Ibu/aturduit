@@ -2,8 +2,8 @@
 <resources>
 
     <!-- indonesia -->
-
     <string name="menu_budget">Budget</string>
+    <string name="menu_budget2">BUDGET NOT SET</string>
     <string name="menu_rate">Rate Aplikasi ini</string>
     <string name="menu_install">Install Aplikasi Lainnya</string>
     <string name="menu_backup">Backup Database</string>
@@ -33,7 +33,6 @@
     <string name="kategori3">Hiburan</string>
     <string name="kategori4">Belanjaan</string>
     <string name="kategori5">Lainnya</string>
-
 
 
     <string name="titikdua">:</string>
@@ -87,11 +86,11 @@
     <string name="Harga">Harga</string>
     <string name="Deskripsi">Deskripsi</string>
 
-    <string name="info_copyright">Copyright © 2018 by Restu Ibu\nAtur Duit 1.1</string>
+    <string name="info_copyright">Copyright © 2018 by Restu Ibu\nAtur Duit 1.2</string>
 
 
-    <string name="banner_ad_unit_id">ca-app-pub-6657666130252014/7859784872-</string>
-    <string name="interstitial_ad_unit_id">ca-app-pub-6657666130252014/8402680470-</string>
+    <string name="banner_ad_unit_id">ca-app-pub-6657666130252014/7859784872</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-6657666130252014/8402680470</string>
 
     <!-- activity_about -->
     <string name="about">Restu Ibu rilis aplikasi lagi nih, namanya Atur Duit (remake dari Cost Tracker).
@@ -133,6 +132,13 @@ Semoga aplikasi ini bermanfaat.
         3. <b>Backup database ke cloud\n</b>
         4. <b>Restore database dari cloud\n</b>
 
+    </string>
+
+    <string name="release_code_25">
+        Apa yang baru di <b>Atur Duit 1.2</b>?\n
+        1. <b>Tambahan kategori transaksi\n</b>
+        2. <b>Tambahan fitur jam pengingat\n</b>
+        3. <b>Sisa budget muncul di ActionBar\n</b>
     </string>
 
 
@@ -258,6 +264,28 @@ Semoga aplikasi ini bermanfaat.
     <string name="id_fmt">User ID: %s</string>
     <string name="email_fmt">Email: %s</string>
 
+    <!-- option -->
+    <string name="option_restore_db">Restore Database</string>
+    <string name="option_backup_db">Backup Database</string>
+    <string name="option_reminder">Reminder</string>
+    <string name="option_reminder2">Atur Pengingat</string>
+    <string name="reminder_title1">Atur Duit Pagi</string>
+    <string name="reminder_title2">Atur Duit Siang</string>
+    <string name="reminder_title3">Atur Duit Malam</string>
 
-    <!-- end of firebase auth -->
+    <string name="option_reset_db">Reset Database</string>
+    <string name="option_reset_db2">Anda yakin ingin Reset Database?</string>
+
+    <string name="btn_yes">Ya</string>
+    <string name="btn_no">Tidak</string>
+
+    <!-- Toast -->
+    <string name="toast_progress_restore_db">Downloading database from cloud...</string>
+    <string name="toast_progress_restore_db2">Download database dari cloud berhasil</string>
+    <string name="toast_progress_restore_db3">Download database dari cloud gagal</string>
+    <string name="toast_progress_backup_db">Uploading data to cloud...</string>
+    <string name="toast_progress_backup_db2">Upload berhasil</string>
+    <string name="toast_progress_backup_db3">Upload gagal, cek koneksi internet Anda</string>
+    <string name="toast_reset_db">Database berhasil direset</string>
+    <string name="toast_reminder">Reminder telah diatur</string>
 </resources>

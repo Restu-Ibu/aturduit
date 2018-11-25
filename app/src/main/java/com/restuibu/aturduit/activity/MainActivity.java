@@ -2,18 +2,25 @@ package com.restuibu.aturduit.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +36,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.restuibu.aturduit.broadcast.NotificationPublisher;
 import com.restuibu.aturduit.fragment.AddTransactionFragment;
 import com.restuibu.aturduit.fragment.HistoryFragment;
 import com.restuibu.aturduit.R;
@@ -37,12 +45,17 @@ import com.restuibu.aturduit.adapter.TabListener;
 import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.util.Util;
+
+import static com.restuibu.aturduit.util.Util.addEmailInSignOutMenu;
+import static com.restuibu.aturduit.util.Util.cancelAllReminder;
 import static com.restuibu.aturduit.util.Util.menu;
+import static com.restuibu.aturduit.util.Util.db;
 
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -58,6 +71,7 @@ import static com.restuibu.aturduit.util.Util.createDirIfNotExists;
 import static com.restuibu.aturduit.util.Util.exportDB;
 import static com.restuibu.aturduit.util.Util.importDB;
 import static com.restuibu.aturduit.util.Util.mAuth;
+import static com.restuibu.aturduit.util.Util.setInitReminder;
 import static com.restuibu.aturduit.util.Util.updateBudgetActionBar;
 
 public class MainActivity extends Activity {
@@ -67,7 +81,8 @@ public class MainActivity extends Activity {
     private Fragment historyFragment = new HistoryFragment();
     private Fragment statisticFragment = new StatisticFragment();
 
-    private float x1 , x2;
+    //private float x1 , x2;
+    private boolean fromSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,20 +101,13 @@ public class MainActivity extends Activity {
         // Asking for the default ActionBar element that our platform supports.
         ActionBar actionBar = getActionBar();
         Intent intent = getIntent();
-        boolean fromSignIn = intent.getBooleanExtra("fromSignIn", false);
+        fromSignIn = intent.getBooleanExtra("fromSignIn", false);
 
-
-
-        if(fromSignIn){
-            importDB(MainActivity.this, fromSignIn);
-        } else {
-            helper = new MySQLiteHelper(MainActivity.this);
-        }
 
         /*
 		 * // Screen handling while hiding ActionBar icon.
 		 * actionBar.setDisplayShowHomeEnabled(false);
-		 * 
+		 *
 		 * // Screen handling while hiding Actionbar title.
 		 * actionBar.setDisplayShowTitleEnabled(false);
 		 */
@@ -136,9 +144,19 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu_) {
         menu = menu_;
-        getMenuInflater().inflate(R.menu.main, menu_);
+        getMenuInflater().inflate(R.menu.main, menu);
 
-        changeBudgetTitle(MainActivity.this);
+        if(fromSignIn){
+            importDB(MainActivity.this, fromSignIn);
+        } else {
+            helper = new MySQLiteHelper(MainActivity.this);
+            db = helper.getWritableDatabase();
+            helper.updateBlankCategory();
+
+            changeBudgetTitle(MainActivity.this);
+            addEmailInSignOutMenu(MainActivity.this);
+        }
+
         return true;
     }
 
@@ -166,6 +184,7 @@ public class MainActivity extends Activity {
 
             case R.id.action_signout:
                 exportDB(MainActivity.this,1, true);
+                cancelAllReminder(MainActivity.this);
                 return true;
 
             case R.id.rate:

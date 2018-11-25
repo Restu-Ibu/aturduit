@@ -14,13 +14,20 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -28,10 +35,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
@@ -51,16 +61,21 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RemoteViews;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -73,6 +88,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.restuibu.aturduit.activity.GoogleSignInActivity;
 import com.restuibu.aturduit.activity.HistoryAndStatisticBudgetActivity;
+import com.restuibu.aturduit.activity.TestActivity;
+import com.restuibu.aturduit.broadcast.NotificationPublisher;
 import com.restuibu.aturduit.fragment.AddTransactionFragment;
 import com.restuibu.aturduit.activity.MainActivity;
 import com.restuibu.aturduit.MyWidgetProvider;
@@ -85,6 +102,13 @@ import com.restuibu.aturduit.model.Budget;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.OptionItem;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.restuibu.aturduit.util.Constant.DATABASE_NAME;
+import static com.restuibu.aturduit.util.Constant.NOTIFICATION_CHANNEL_ID;
+import static com.restuibu.aturduit.util.Constant.NOTIFICATION_CHANNEL_NAME;
+import static com.restuibu.aturduit.util.Constant.NOTIFICATION_MORNING;
+import static com.restuibu.aturduit.util.Constant.NOTIFICATION_NIGHT;
+import static com.restuibu.aturduit.util.Constant.NOTIFICATION_NOON;
 import static com.restuibu.aturduit.util.Constant.PERMISSIONS_STORAGE;
 import static com.restuibu.aturduit.util.Constant.REQUEST_EXTERNAL_STORAGE;
 
@@ -95,8 +119,11 @@ public class Util {
     // menu
     public static Menu menu;
 
+
     // db
     public static MySQLiteHelper helper;
+    public static SQLiteDatabase db;
+
     // export import db
     public static File currentDB = null;
     public static File backupDB = null;
@@ -115,24 +142,24 @@ public class Util {
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        backupDB.delete();
+                        activity.deleteDatabase(DATABASE_NAME);
                         Intent i = new Intent(activity, GoogleSignInActivity.class);
                         activity.startActivity(i);
-                        ((MainActivity)activity).finish();
+                        ((MainActivity) activity).finish();
                     }
                 });
     }
 
 
-
-
-    public static void showProgress(Context c, String msg){
+    public static void showProgress(Context c, String msg) {
         pd = new ProgressDialog(c);
         pd.setMessage(msg);
         pd.show();
     }
 
-    public static void stopProgress(){
-        if(pd.isShowing())
+    public static void stopProgress() {
+        if (pd.isShowing())
             pd.dismiss();
     }
 
@@ -186,7 +213,6 @@ public class Util {
         AdRequest adRequest = new AdRequest.Builder().build();
         SplashActivity.mInterstitialAd.loadAd(adRequest);
     }
-
 
 
     public static void alertInfoBackup(final Context c) {
@@ -338,13 +364,13 @@ public class Util {
         final AlertDialog alert = new AlertDialog.Builder(c).create();
 
         GridView grid = (GridView) dialogview.findViewById(R.id.gridView1);
-        alert.setTitle("Menu");
+        //alert.setTitle("Menu");
 
         ArrayList<OptionItem> options = new ArrayList<OptionItem>();
-        options.add(new OptionItem("Restore Database", R.mipmap.ic_restore));
-        options.add(new OptionItem("Backup Database", R.mipmap.ic_backup));
-        options.add(new OptionItem("Reminder", R.mipmap.ic_reminder));
-        options.add(new OptionItem("Reset Database", R.mipmap.ic_reset));
+        options.add(new OptionItem(getStringInt(R.string.option_restore_db), R.mipmap.ic_restore));
+        options.add(new OptionItem(getStringInt(R.string.option_backup_db), R.mipmap.ic_backup));
+        options.add(new OptionItem(getStringInt(R.string.option_reminder), R.mipmap.ic_reminder));
+        options.add(new OptionItem(getStringInt(R.string.option_reset_db), R.mipmap.ic_reset));
         OptionAdapter adapter = new OptionAdapter(c, options);
 
         grid.setAdapter(adapter);
@@ -363,19 +389,18 @@ public class Util {
                         exportDB(c, 1, false);
                         break;
                     case 2:
-                        //Util.alertTimer(c);
-                        //currency = "Rp";
-                        Toast.makeText(c, "Coming soon", Toast.LENGTH_SHORT).show();
+                        alertReminder(c);
+
                         break;
                     case 3:
                         AlertDialog.Builder builder = new AlertDialog.Builder(c);
 
-                        builder.setTitle("Reset Database");
+                        builder.setTitle(c.getString(R.string.option_reset_db));
 
                         builder.setIcon(android.R.drawable.ic_delete);
-                        builder.setMessage("Anda yakin ingin Reset Database?");
+                        builder.setMessage(c.getString(R.string.option_reset_db2));
 
-                        builder.setPositiveButton("YES",
+                        builder.setPositiveButton(c.getString(R.string.btn_yes),
                                 new DialogInterface.OnClickListener() {
 
                                     public void onClick(DialogInterface arg0,
@@ -385,7 +410,7 @@ public class Util {
                                                 c);
                                         helper.resetDatabase();
 
-                                        Toast.makeText(c, "Database berhasil direset", Toast.LENGTH_LONG)
+                                        Toast.makeText(c, c.getString(R.string.toast_reset_db), Toast.LENGTH_LONG)
                                                 .show();
 
                                         Util.restart(c);
@@ -394,7 +419,7 @@ public class Util {
 
                                 });
 
-                        builder.setNegativeButton("NO",
+                        builder.setNegativeButton(c.getString(R.string.btn_no),
                                 new DialogInterface.OnClickListener() {
 
                                     public void onClick(DialogInterface dialog,
@@ -479,8 +504,6 @@ public class Util {
     }
 
     public static boolean checkBudget(Context context) {
-
-        MySQLiteHelper helper = new MySQLiteHelper(context);
         if (helper.getDetailLastBudget() != null) {
             Budget budget = helper.getDetailLastBudget();
 
@@ -583,9 +606,9 @@ public class Util {
     }
 
 
-   /**
+    /**
      * Checks if the app has permission to write to device storage
-     *
+     * <p>
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity
@@ -606,75 +629,74 @@ public class Util {
 
     public static void importDB(final Context c, final boolean fromSignIn) {
 
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
-            String userDBName = mAuth.getCurrentUser().getUid();
-            StorageReference backupDBRef = storageRef.child(c.getPackageName() + "/backupDB/" + userDBName);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        String userDBName = mAuth.getCurrentUser().getUid();
+        StorageReference backupDBRef = storageRef.child(c.getPackageName() + "/backupDB/" + userDBName);
 
-            Util.showProgress(c, "Restoring from cloud...");
+        Util.showProgress(c, c.getString(R.string.toast_progress_restore_db));
 
-            backupDBRef.getFile(backupDB).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    // Local temp file has been created
-                    FileChannel source = null;
-                    FileChannel destination = null;
-                    try {
-                        source = new FileInputStream(backupDB).getChannel();
-                        destination = new FileOutputStream(currentDB).getChannel();
-                        destination.transferFrom(source, 0, source.size());
-                        source.close();
-                        destination.close();
+        backupDBRef.getFile(backupDB).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                try {
+                    FileChannel source = new FileInputStream(backupDB).getChannel();
+                    FileChannel destination = new FileOutputStream(currentDB).getChannel();
+                    destination.transferFrom(source, 0, source.size());
+                    source.close();
+                    destination.close();
 
-                        Toast.makeText(c, "Sinkronisasi database cloud berhasil",
-                                Toast.LENGTH_SHORT).show();
+                    Toast.makeText(c, c.getString(R.string.toast_progress_restore_db2),
+                            Toast.LENGTH_SHORT).show();
 
-                        if(!fromSignIn){
-                            Util.restart(c);
-                        } else {
-                            helper = new MySQLiteHelper(c);
-                        }
-
-
-                    } catch (Exception e) {
-                        Toast.makeText(c, e.toString(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    Util.stopProgress();
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                    FileChannel source = null;
-                    FileChannel destination = null;
-                    try {
-                        source = new FileInputStream(backupDB).getChannel();
-                        destination = new FileOutputStream(currentDB).getChannel();
-                        destination.transferFrom(source, 0, source.size());
-                        source.close();
-                        destination.close();
-
-                        Toast.makeText(c, "Sinkronisasi database cloud gagal",
-                                Toast.LENGTH_SHORT).show();
-                        Util.restart(c);
-                    } catch (FileNotFoundException e) {
-                        Toast.makeText(c, "Database tidak ditemukan di cloud",
-                                Toast.LENGTH_SHORT).show();
-
+                    if (fromSignIn) {
                         helper = new MySQLiteHelper(c);
-                        helper.resetDatabase();
-
-                    } catch (IOException e) {
-                        Toast.makeText(c, e.toString(),
-                                Toast.LENGTH_SHORT).show();
+                        db = helper.getWritableDatabase();
+                        helper.updateBlankCategory();
+                        setInitReminder(c);
+                        changeBudgetTitle(c);
+                        addEmailInSignOutMenu(c);
+                    } else {
+                        Util.restart(c);
                     }
-                    Util.stopProgress();
+
+
+                } catch (Exception e) {
+                    Toast.makeText(c, e.toString(),
+                            Toast.LENGTH_SHORT).show();
                 }
-            });
+                Util.stopProgress();
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                FileChannel source = null;
+                FileChannel destination = null;
+                try {
 
+                    // check if backupDB not yet exist means its first time user
+                    if(fromSignIn){
+                        if(!backupDB.exists()){
+                            helper = new MySQLiteHelper(c);
+                            db = helper.getWritableDatabase();
+                            changeBudgetTitle(c);
+                            addEmailInSignOutMenu(c);
+                        }
+                    }
+
+                    Toast.makeText(c, c.getString(R.string.toast_progress_restore_db3),
+                            Toast.LENGTH_SHORT).show();
+
+                }
+                catch (Exception e) {
+                    Toast.makeText(c, e.toString(),
+                            Toast.LENGTH_SHORT).show();
+                }
+                Util.stopProgress();
+            }
+        });
 
 
     }
@@ -684,7 +706,7 @@ public class Util {
 
         if (!file.exists()) {
             if (!file.mkdirs()) {
-                Log.e("TravellerLog :: ", "Problem creating Image folder");
+                Log.e("TravellerLog :: ", "Problem creating folder");
                 ret = false;
             }
         }
@@ -721,23 +743,23 @@ public class Util {
         StorageReference backupDBRef = storageRef.child(c.getPackageName() + "/backupDB/" + userDBName);
         UploadTask uploadTask = backupDBRef.putFile(file);
 
-        Util.showProgress(c, "Syncing to cloud...");
+        Util.showProgress(c, c.getString(R.string.toast_progress_backup_db));
 
         // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(c, "Sinkronisasi gagal, cek koneksi internet Anda",
+                Toast.makeText(c, c.getString(R.string.toast_progress_backup_db3),
                         Toast.LENGTH_SHORT).show();
                 Util.stopProgress();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(c, "Sinkronisasi berhasil",
+                Toast.makeText(c, c.getString(R.string.toast_progress_backup_db2),
                         Toast.LENGTH_SHORT).show();
 
-                if(isSignOut){
+                if (isSignOut) {
                     Util.signOut((Activity) c);
                 }
 
@@ -746,13 +768,12 @@ public class Util {
         });
     }
 
-    public static void changeBudgetTitle(Context c){
-
-        if(menu != null){
+    public static void changeBudgetTitle(Context c) {
+        if (menu != null) {
             MenuItem budgetMenu = menu.findItem(R.id.budget);
 
-            if (!Util.checkBudget(c)){
-                SpannableString s = new SpannableString("BUDGET NOT SET");
+            if (!Util.checkBudget(c)) {
+                SpannableString s = new SpannableString(c.getString(R.string.menu_budget2));
                 s.setSpan(new ForegroundColorSpan(Color.RED), 0, s.length(), 0);
                 budgetMenu.setTitle(s);
 
@@ -762,28 +783,301 @@ public class Util {
         }
     }
 
-    public static void updateBudgetActionBar(){
+    public static void addEmailInSignOutMenu(Context c) {
+
+        if (menu != null) {
+            MenuItem budgetMenu = menu.findItem(R.id.action_signout);
+
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(c);
+
+            SpannableString s = new SpannableString("Sign Out (" + acct.getEmail() + ")");
+            //s.setSpan(new ForegroundColorSpan(Color.RED), 0, s.length(), 0);
+            budgetMenu.setTitle(s);
+        }
+    }
+
+    public static void updateBudgetActionBar() {
         MenuItem budgetMenu = menu.findItem(R.id.budget);
         String budgetLeft = helper.getDetailLastBudget().getLeft();
-        Log.e("budget left", budgetLeft);
+        //Log.e("budget left", budgetLeft);
 
         SpannableString s = new SpannableString(Util.formatUang(budgetLeft));
 
-        s.setSpan(new RelativeSizeSpan(1.5f), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new RelativeSizeSpan(1.3f), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        if (Long.parseLong(budgetLeft) < 0){
+        if (Long.parseLong(budgetLeft) < 0) {
             s.setSpan(new ForegroundColorSpan(Color.RED), 0, s.length(), 0);
         }
 
         budgetMenu.setTitle(s);
     }
 
-    public static void removeOtherCategories(Context c, ImageView[] iv, int id){
-        for (int i=0; i<5; i++){
+    public static void removeOtherCategories(Context c, ImageView[] iv, int id) {
+        for (int i = 0; i < 5; i++) {
             if (i != id)
                 iv[i].setBackgroundColor(0);
         }
     }
 
+    public static void alertReminder(final Context c) {
 
+        LayoutInflater inflater = LayoutInflater.from(c);
+        View dialogview = inflater.inflate(R.layout.alertdialog_reminder,
+                null);
+        final AlertDialog alert = new AlertDialog.Builder(c).create();
+        alert.setTitle(c.getString(R.string.option_reminder2));
+
+        final Spinner spinPagi = dialogview.findViewById(R.id.spinner1);
+        final Spinner spinSiang = dialogview.findViewById(R.id.spinner2);
+        final Spinner spinMalam = dialogview.findViewById(R.id.spinner3);
+
+        final Switch sPagi = dialogview.findViewById(R.id.switch1);
+        final Switch sSiang = dialogview.findViewById(R.id.switch2);
+        final Switch sMalam = dialogview.findViewById(R.id.switch3);
+        Button bSimpan = dialogview.findViewById(R.id.bSimpan);
+        Button bBatal = dialogview.findViewById(R.id.bBatal);
+
+        setSpinnerValue(c, spinPagi, "pagi");
+        setSpinnerValue(c, spinSiang, "siang");
+        setSpinnerValue(c, spinMalam, "malam");
+
+
+        ArrayList<Alarm> alarms = helper.getAllReminder();
+        Alarm alarm_pagi = alarms.get(0);
+        Alarm alarm_siang = alarms.get(1);
+        Alarm alarm_malam = alarms.get(2);
+
+        // INIT
+        sPagi.setChecked((alarm_pagi.getIsRepeat() == 1) ? true : false);
+        sSiang.setChecked((alarm_siang.getIsRepeat() == 1) ? true : false);
+        sMalam.setChecked((alarm_malam.getIsRepeat() == 1) ? true : false);
+
+        spinPagi.setEnabled((alarm_pagi.getIsRepeat() == 1) ? true : false);
+        spinSiang.setEnabled((alarm_siang.getIsRepeat() == 1) ? true : false);
+        spinMalam.setEnabled((alarm_malam.getIsRepeat() == 1) ? true : false);
+
+        spinPagi.setSelection(getSpinnerIndex(spinPagi, getStringInt((int) alarm_pagi.getTime())));
+        spinSiang.setSelection(getSpinnerIndex(spinSiang, getStringInt((int) alarm_siang.getTime())));
+        spinMalam.setSelection(getSpinnerIndex(spinMalam, getStringInt((int) alarm_malam.getTime())));
+        // end INIT
+
+        sPagi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                spinPagi.setEnabled(b);
+            }
+        });
+
+        sSiang.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                spinSiang.setEnabled(b);
+            }
+        });
+
+        sMalam.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                spinMalam.setEnabled(b);
+            }
+        });
+
+        bSimpan.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setUpdateReminder(c, NOTIFICATION_MORNING, spinPagi, sPagi);
+                setUpdateReminder(c, NOTIFICATION_NOON, spinSiang, sSiang);
+                setUpdateReminder(c, NOTIFICATION_NIGHT, spinMalam, sMalam);
+
+                Toast.makeText(c, c.getString(R.string.toast_reminder), Toast.LENGTH_SHORT).show();
+
+                alert.dismiss();
+            }
+        });
+
+        bBatal.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alert.dismiss();
+            }
+        });
+
+        alert.setView(dialogview);
+        alert.show();
+    }
+
+    public static void setInitReminder(Context c){
+        ArrayList<Alarm> alarms = helper.getAllReminder();
+        Alarm alarm_pagi = alarms.get(0);
+        Alarm alarm_siang = alarms.get(1);
+        Alarm alarm_malam = alarms.get(2);
+
+        setUpdateReminder2(c, alarm_pagi.getIdAlarm(), (int) alarm_pagi.getTime(), alarm_pagi.getIsRepeat());
+        setUpdateReminder2(c, alarm_siang.getIdAlarm(), (int) alarm_siang.getTime(), alarm_siang.getIsRepeat());
+        setUpdateReminder2(c, alarm_malam.getIdAlarm(), (int) alarm_malam.getTime(), alarm_malam.getIsRepeat());
+    }
+
+    private static void setUpdateReminder(Context c, int waktu, Spinner spin, Switch sw) {
+        int idAlarm = waktu;
+        int time = Integer.parseInt(spin.getSelectedItem().toString());
+        int isChecked = (sw.isChecked()) ? 1 : 0;
+
+        // Update DB
+        Alarm alarm = new Alarm(idAlarm, time, isChecked);
+        helper.updateReminder(alarm);
+
+        setUpdateReminder2(c, idAlarm, time, isChecked);
+    }
+
+    private static void setUpdateReminder2(Context c, int idAlarm, int time, int isChecked) {
+        // Update alarm
+        String title = "";
+        switch (idAlarm) {
+            case 1:
+                title = c.getString(R.string.reminder_title1);
+                break;
+            case 2:
+                title = c.getString(R.string.reminder_title2);
+                break;
+            case 3:
+                title = c.getString(R.string.reminder_title3);
+                break;
+
+        }
+        if (isChecked == 1){
+            cancelReminder(c, idAlarm);
+            scheduleNotification(c, getNotification(c, title), idAlarm, time);
+        }
+        else {
+            cancelReminder(c, idAlarm);
+        }
+    }
+
+    private static void cancelReminder(Context c, int idAlarm) {
+        AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        Intent notificationIntent = new Intent(c, NotificationPublisher.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(c, idAlarm, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+    }
+
+    public static void cancelAllReminder(Context c) {
+        AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+
+        PendingIntent pendingIntent;
+        Intent notificationIntent;
+        notificationIntent = new Intent(c, NotificationPublisher.class);
+
+        pendingIntent = PendingIntent.getBroadcast(c, NOTIFICATION_MORNING, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+
+        pendingIntent = PendingIntent.getBroadcast(c, NOTIFICATION_NOON, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+
+        pendingIntent = PendingIntent.getBroadcast(c, NOTIFICATION_NIGHT, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+    }
+
+
+    private static int getSpinnerIndex(Spinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private static String getStringInt(int i) {
+        String result = Integer.toString(i);
+
+        if (i < 10) {
+            result = "0" + Integer.toString(i);
+        }
+
+        return result;
+    }
+
+    //private method of your class
+    private static void setSpinnerValue(Context c, Spinner spin, String waktu) {
+        String[] pagi = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"};
+        String[] siang = new String[]{"12", "13", "14", "15", "16", "17"};
+        String[] malam = new String[]{"18", "19", "20", "21", "22", "23"};
+
+        ArrayList list = null;
+
+        switch (waktu) {
+            case "pagi":
+                list = new ArrayList<>(Arrays.asList(pagi));
+                break;
+            case "siang":
+                list = new ArrayList<>(Arrays.asList(siang));
+                break;
+            case "malam":
+                list = new ArrayList<>(Arrays.asList(malam));
+                break;
+        }
+
+        // Initializing an ArrayAdapter
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                c, android.R.layout.simple_spinner_item, list);
+
+        spin.setAdapter(spinnerArrayAdapter);
+        //spin.setSelection(defaultPosition);
+    }
+
+
+    private static Notification getNotification(Context c, String title) {
+        Intent intent = new Intent(c, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
+
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(c, NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_icon)
+                .setContentTitle(title)
+                .setContentText("Jangan lupa catet transaksi!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setSound(alarmSound)
+                .setAutoCancel(true);
+
+        return mBuilder.build();
+    }
+
+    private static void scheduleNotification(Context c, Notification notification, int ID, int hour) {
+        // Create notification channel
+        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+        NotificationManager notificationManager = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(notificationChannel);
+        notificationChannel.enableLights(true);
+        notificationChannel.setLightColor(Color.RED);
+        notificationChannel.enableVibration(true);
+
+        Intent notificationIntent = new Intent(c, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, ID);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        int RequestCode = ID;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(c, RequestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, getTime(hour), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    public static long getTime(int hour) {
+        // Quote in Morning at 08:32:00 AM
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        Calendar cur = Calendar.getInstance();
+
+        if (cur.after(calendar)) {
+            calendar.add(Calendar.DATE, 1);
+        }
+
+        return calendar.getTimeInMillis();
+    }
 }
