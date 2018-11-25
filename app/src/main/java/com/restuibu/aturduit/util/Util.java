@@ -367,10 +367,10 @@ public class Util {
         //alert.setTitle("Menu");
 
         ArrayList<OptionItem> options = new ArrayList<OptionItem>();
-        options.add(new OptionItem(getStringInt(R.string.option_restore_db), R.mipmap.ic_restore));
-        options.add(new OptionItem(getStringInt(R.string.option_backup_db), R.mipmap.ic_backup));
-        options.add(new OptionItem(getStringInt(R.string.option_reminder), R.mipmap.ic_reminder));
-        options.add(new OptionItem(getStringInt(R.string.option_reset_db), R.mipmap.ic_reset));
+        options.add(new OptionItem(c.getString(R.string.option_restore_db), R.mipmap.ic_restore));
+        options.add(new OptionItem(c.getString(R.string.option_backup_db), R.mipmap.ic_backup));
+        options.add(new OptionItem(c.getString(R.string.option_reminder), R.mipmap.ic_reminder));
+        options.add(new OptionItem(c.getString(R.string.option_reset_db), R.mipmap.ic_reset));
         OptionAdapter adapter = new OptionAdapter(c, options);
 
         grid.setAdapter(adapter);
