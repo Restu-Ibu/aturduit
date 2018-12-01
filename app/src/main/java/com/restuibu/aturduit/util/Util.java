@@ -406,8 +406,6 @@ public class Util {
                                     public void onClick(DialogInterface arg0,
                                                         int arg1) {
                                         // TODO Auto-generated method stub
-                                        MySQLiteHelper helper = new MySQLiteHelper(
-                                                c);
                                         helper.resetDatabase();
 
                                         Toast.makeText(c, c.getString(R.string.toast_reset_db), Toast.LENGTH_LONG)
