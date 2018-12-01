@@ -244,10 +244,10 @@ public class MainActivity extends Activity {
         ArrayList<String> list = new ArrayList<String>();
 
         list.add("Waktu mulai:");
-        list.add((new SimpleDateFormat("dd/MM/yyyy kk:mm:ss"))
-                .format(new Date()));
+        list.add((new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"))
+                .format(new Date()) + " (Sekarang)");
         list.add((new SimpleDateFormat("dd/MM/yyyy")).format(new Date())
-                + " 24:00:00");
+                + " 00:00:00 (Hari ini)");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, list);
@@ -449,9 +449,9 @@ public class MainActivity extends Activity {
 
         tIdBudget.setText(Integer.toString(budget.getIdBudget()));
         tStartDate.setText(Util.getDateString(budget.getTimeStartDate(),
-                new SimpleDateFormat("dd/MM/yy kk:mm:ss")));
+                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")));
         tEndDate.setText(Util.getDateString(budget.getTimeEndDate(),
-                new SimpleDateFormat("dd/MM/yy kk:mm:ss")));
+                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")));
         tCategory.setText(budget.getCategory());
         tAmount.setText(Util.formatUang(budget.getAmount()));
 

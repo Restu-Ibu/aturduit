@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1017980932850-umd80tistkn3msfr6l8scbl49kh9s0hg.apps.googleusercontent.com",
+          "client_id": "1017980932850-8c4ktdauquelfciqbq5rgn194do18c9l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.restuibu.aturduit",
-            "certificate_hash": "c82a3a6f16cbb095c681c1171cc391a797986f9b"
+            "certificate_hash": "2afa2e7c5182284ff70eb4dedda4008a983cab14"
           }
         },
         {
@@ -28,6 +28,14 @@
           "android_info": {
             "package_name": "com.restuibu.aturduit",
             "certificate_hash": "2b33a5735864dba0a20bf4b85a48e19e60ff6ed8"
+          }
+        },
+        {
+          "client_id": "1017980932850-umd80tistkn3msfr6l8scbl49kh9s0hg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.restuibu.aturduit",
+            "certificate_hash": "c82a3a6f16cbb095c681c1171cc391a797986f9b"
           }
         },
         {

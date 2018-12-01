@@ -607,7 +607,6 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 						ArrayList<Transaksi> listTransaksi = new ArrayList<Transaksi>();
 						TransaksiAdapter adapterTransaksi;
 
-						MySQLiteHelper helper = new MySQLiteHelper(context);
 
 						helper.deleteTransaksi(itemsArrayList.get(position)
 								.getIdTransaksi());
