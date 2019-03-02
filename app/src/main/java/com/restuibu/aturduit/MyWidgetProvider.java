@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.restuibu.aturduit.activity.MainActivity;
+import com.restuibu.aturduit.activity.SplashActivity;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.util.Util;
 
@@ -36,12 +37,12 @@ public class MyWidgetProvider extends AppWidgetProvider {
 					R.layout.widget_layout);
 
 			// Register an onClickListener
-			Intent intent = new Intent(context, MainActivity.class);
+			Intent intent = new Intent(context, SplashActivity.class);
 			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);  // Identifies the particular widget...
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			// Make the pending intent unique...
 			intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pendingIntent = PendingIntent.getActivity(context, 111, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			views.setOnClickPendingIntent(R.id.linearLayout1, pendingIntent);
 			
@@ -56,11 +57,11 @@ public class MyWidgetProvider extends AppWidgetProvider {
 						Util.formatUang(helper.getDetailLastBudget().getLeft()));
 				views.setTextViewText(R.id.textView3, Util.getDateString(helper
 						.getDetailLastBudget().getTimeStartDate(),
-						new SimpleDateFormat("dd/MM/yyyy kk:mm:ss")));
+						new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")));
 
 				views.setTextViewText(R.id.textView4, Util.getDateString(helper
 						.getDetailLastBudget().getTimeEndDate(),
-						new SimpleDateFormat("dd/MM/yyyy kk:mm:ss")));
+						new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")));
 			}
 			// To update a label
 
