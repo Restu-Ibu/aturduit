@@ -406,8 +406,6 @@ public class Util {
                                     public void onClick(DialogInterface arg0,
                                                         int arg1) {
                                         // TODO Auto-generated method stub
-                                        MySQLiteHelper helper = new MySQLiteHelper(
-                                                c);
                                         helper.resetDatabase();
 
                                         Toast.makeText(c, c.getString(R.string.toast_reset_db), Toast.LENGTH_LONG)
@@ -1028,7 +1026,7 @@ public class Util {
 
 
     private static Notification getNotification(Context c, String title) {
-        Intent intent = new Intent(c, MainActivity.class);
+        Intent intent = new Intent(c, SplashActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
 

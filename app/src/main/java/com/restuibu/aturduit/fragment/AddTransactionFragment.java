@@ -68,7 +68,10 @@ public class AddTransactionFragment extends Fragment {
         SplashActivity.mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
-                MainActivity.loadInterstitial(getActivity());
+                if(getActivity() != null){
+                    MainActivity.loadInterstitial(getActivity());
+                }
+
             }
         });
 
@@ -286,7 +289,7 @@ public class AddTransactionFragment extends Fragment {
                             bDatePicker.setText("0"
                                     + Integer.toString(datePicker
                                     .getDayOfMonth()) + "/"
-                                    + Integer.toString(datePicker.getMonth())
+                                    + Integer.toString(datePicker.getMonth() + 1)
                                     + "/"
                                     + Integer.toString(datePicker.getYear()));
                         else if ((datePicker.getDayOfMonth() > 9)

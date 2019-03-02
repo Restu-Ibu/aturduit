@@ -409,6 +409,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE name='tbl_transaksi'");
         db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE name='tbl_alarm'");
 
+        db.execSQL("INSERT INTO tbl_alarm VALUES (1, 9, 0)");
+        db.execSQL("INSERT INTO tbl_alarm VALUES (2, 14, 0)");
+        db.execSQL("INSERT INTO tbl_alarm VALUES (3, 20, 0)");
+
     }
 
     public Transaksi getDetailTransaksi(int idTransaksi) {
