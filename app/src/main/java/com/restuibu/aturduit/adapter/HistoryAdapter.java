@@ -104,6 +104,16 @@ public class HistoryAdapter extends ArrayAdapter<History> implements Filterable 
 			llKategori.setVisibility(View.VISIBLE);
 			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori5);
 			tvKategori.setText("("+itemsArrayList.get(position).getTotal_other()+")");
+		}if (!itemsArrayList.get(position).getTotal_hutang().equals("0")){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori6);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori6);
+			tvKategori.setText("("+itemsArrayList.get(position).getTotal_hutang()+")");
+		}if (!itemsArrayList.get(position).getTotal_zis().equals("0")){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori7);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori7);
+			tvKategori.setText("("+itemsArrayList.get(position).getTotal_zis()+")");
 		}
 
 		total.setGravity(Gravity.RIGHT);

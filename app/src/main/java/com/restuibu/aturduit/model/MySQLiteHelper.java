@@ -454,11 +454,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 + "b.total_transport, "
                 + "b.total_entertain, "
                 + "b.total_groceries, "
-                + "b.total_others "
+                + "b.total_others, "
+                + "b.total_hutang, "
+                + "b.total_zis "
                 + "FROM "
                 + "(select distinct tanggal, sum(harga) total, count(*) jumlah from tbl_transaksi GROUP BY tanggal order by time asc) a "
                 + "INNER JOIN "
-                + "(select tanggal, SUM(case when kategori = 'Makanan dan minuman' then 1 else 0 end) as total_food, SUM(case when kategori = 'Transportasi' then 1  else 0 end) as total_transport, SUM(case when kategori = 'Hiburan' then 1  else 0 end) as total_entertain, SUM(case when kategori = 'Belanjaan' then 1  else 0 end) as total_groceries, SUM(case when kategori = 'Lainnya' then 1  else 0 end) as total_others from tbl_transaksi GROUP BY tanggal) b "
+                + "(select tanggal, SUM(case when kategori = 'Makanan dan minuman' then 1 else 0 end) as total_food, SUM(case when kategori = 'Transportasi' then 1  else 0 end) as total_transport, SUM(case when kategori = 'Hiburan' then 1  else 0 end) as total_entertain, SUM(case when kategori = 'Belanjaan' then 1  else 0 end) as total_groceries, SUM(case when kategori = 'Lainnya' then 1  else 0 end) as total_others, SUM(case when kategori = 'Hutang' then 1  else 0 end) as total_hutang, SUM(case when kategori = 'ZIS' then 1  else 0 end) as total_zis from tbl_transaksi GROUP BY tanggal) b "
                 + "ON a.tanggal = b.tanggal";
 
 
@@ -477,7 +479,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                         cursor.getString(4),
                         cursor.getString(5),
                         cursor.getString(6),
-                        cursor.getString(7));
+                        cursor.getString(7),
+                        cursor.getString(8),
+                        cursor.getString(9));
                 history.add(hist);
 
             } while (cursor.moveToNext());

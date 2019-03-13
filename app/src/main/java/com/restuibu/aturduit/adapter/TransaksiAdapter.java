@@ -120,6 +120,19 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
             tvKategori = (TextView) rowView.findViewById(R.id.tvKategori5);
             tvKategori.setVisibility(View.GONE);
         }
+		else if (itemsArrayList.get(position).getKategori().equals(context.getString(R.string.kategori6))){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori6);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori6);
+			tvKategori.setVisibility(View.GONE);
+		}
+		else if (itemsArrayList.get(position).getKategori().equals(context.getString(R.string.kategori7))){
+			llKategori = (LinearLayout) rowView.findViewById(R.id.llKategori7);
+			llKategori.setVisibility(View.VISIBLE);
+			tvKategori = (TextView) rowView.findViewById(R.id.tvKategori7);
+			tvKategori.setVisibility(View.GONE);
+		}
+
 
 
         selector.setOnClickListener(new View.OnClickListener() {
@@ -204,13 +217,15 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 								.findViewById(R.id.editText4);
 						final EditText eDescription = (EditText) dialogview
 								.findViewById(R.id.editText5);
-						final ImageView[] ivKategori = new ImageView[5];
+						final ImageView[] ivKategori = new ImageView[7];
 
 						ivKategori[0] = (ImageView) dialogview.findViewById(R.id.imageViewKategori1);
 						ivKategori[1] = (ImageView) dialogview.findViewById(R.id.imageViewKategori2);
 						ivKategori[2] = (ImageView) dialogview.findViewById(R.id.imageViewKategori3);
 						ivKategori[3] = (ImageView) dialogview.findViewById(R.id.imageViewKategori4);
 						ivKategori[4] = (ImageView) dialogview.findViewById(R.id.imageViewKategori5);
+						ivKategori[5] = (ImageView) dialogview.findViewById(R.id.imageViewKategori6);
+						ivKategori[6] = (ImageView) dialogview.findViewById(R.id.imageViewKategori7);
 
                         final String[] category = {itemsArrayList
                                 .get(position).getKategori()};
@@ -225,6 +240,10 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 							ivKategori[3].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
 						}else if (category[0].equals(context.getString(R.string.kategori5))){
 							ivKategori[4].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+						}else if (category[0].equals(context.getString(R.string.kategori6))){
+							ivKategori[5].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+						}else if (category[0].equals(context.getString(R.string.kategori7))){
+							ivKategori[6].setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
 						}
 
 						ivKategori[0].setOnClickListener(new View.OnClickListener() {
@@ -272,6 +291,24 @@ public class TransaksiAdapter extends ArrayAdapter<Transaksi> implements
 								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
 								category[0] = context.getString(R.string.kategori5);
 								Util.removeOtherCategories(context, ivKategori, 4);
+								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
+							}
+						});
+						ivKategori[5].setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+								category[0] = context.getString(R.string.kategori6);
+								Util.removeOtherCategories(context, ivKategori, 5);
+								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
+							}
+						});
+						ivKategori[6].setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								view.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_grey));
+								category[0] = context.getString(R.string.kategori7);
+								Util.removeOtherCategories(context, ivKategori, 6);
 								Toast.makeText(context, category[0], Toast.LENGTH_SHORT).show();
 							}
 						});

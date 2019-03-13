@@ -103,7 +103,6 @@ public class MainActivity extends Activity {
         Intent intent = getIntent();
         fromSignIn = intent.getBooleanExtra("fromSignIn", false);
 
-
         /*
 		 * // Screen handling while hiding ActionBar icon.
 		 * actionBar.setDisplayShowHomeEnabled(false);

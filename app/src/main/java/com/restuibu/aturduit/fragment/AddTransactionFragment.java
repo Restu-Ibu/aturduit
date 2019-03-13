@@ -40,7 +40,7 @@ public class AddTransactionFragment extends Fragment {
 
     private Button bSave, bReset;
 
-    private ImageView[] ivKategori = new ImageView[5];
+    private ImageView[] ivKategori = new ImageView[7];
     private String category;
 
     private boolean value_text;
@@ -106,6 +106,8 @@ public class AddTransactionFragment extends Fragment {
         ivKategori[2] = (ImageView) rootView.findViewById(R.id.imageViewKategori3);
         ivKategori[3] = (ImageView) rootView.findViewById(R.id.imageViewKategori4);
         ivKategori[4] = (ImageView) rootView.findViewById(R.id.imageViewKategori5);
+        ivKategori[5] = (ImageView) rootView.findViewById(R.id.imageViewKategori6);
+        ivKategori[6] = (ImageView) rootView.findViewById(R.id.imageViewKategori7);
 
         category = "";
         ivKategori[0].setOnClickListener(new View.OnClickListener() {
@@ -153,6 +155,24 @@ public class AddTransactionFragment extends Fragment {
                 view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
                 category = getString(R.string.kategori5);
                 Util.removeOtherCategories(getActivity(), ivKategori, 4);
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
+            }
+        });
+        ivKategori[5].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
+                category = getString(R.string.kategori6);
+                Util.removeOtherCategories(getActivity(), ivKategori, 5);
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
+            }
+        });
+        ivKategori[6].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.soft_grey));
+                category = getString(R.string.kategori7);
+                Util.removeOtherCategories(getActivity(), ivKategori, 6);
                 Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show();
             }
         });
