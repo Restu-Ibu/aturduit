@@ -17,6 +17,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -198,6 +199,7 @@ public class StatisticFragment extends Fragment implements OnChartValueSelectedL
 
                         listHistory = helper.getAllMonthlyHistory();
 
+//                        Toast.makeText(getActivity(), listHistory.get(0).getTanggal(), Toast.LENGTH_SHORT).show();
                         if (jenisChart == 1) {
                             xAxisFormatter = new MonthAxisValueFormatter(mChart);
                             mChart.setVisibility(View.VISIBLE);
@@ -213,6 +215,7 @@ public class StatisticFragment extends Fragment implements OnChartValueSelectedL
                     case 3:
                         listHistory = helper.getAllYearlyHistory();
 
+//                        Toast.makeText(getActivity(), listHistory.get(0).getTanggal(), Toast.LENGTH_SHORT).show();
                         if (jenisChart == 1) {
                             xAxisFormatter = new YearAxisValueFormatter(mChart);
                             mChart.setVisibility(View.VISIBLE);

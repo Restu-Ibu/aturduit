@@ -24,16 +24,17 @@ public class TabListener implements ActionBar.TabListener {
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		ft.replace(R.id.frameLayout1, fragment);
-		if(tab.getPosition()==0){
-			m.getActionBar().setTitle(m.getResources().getString(R.string.Tambah));
-			//Toast.makeText(m.getApplicationContext(), "0", Toast.LENGTH_SHORT).show();
-		}else if (tab.getPosition()==1){
-			m.getActionBar().setTitle(m.getResources().getString(R.string.Riwayat));
-			//Toast.makeText(m.getApplicationContext(), "1", Toast.LENGTH_SHORT).show();
-		}else if(tab.getPosition()==2){
-			m.getActionBar().setTitle(m.getResources().getString(R.string.Statistik));
-			//Toast.makeText(m.getApplicationContext(), "2", Toast.LENGTH_SHORT).show();
-		}
+		m.getActionBar().setTitle("Dashboard");
+//		if(tab.getPosition()==0){
+//			m.getActionBar().setTitle(m.getResources().getString(R.string.Tambah));
+//			//Toast.makeText(m.getApplicationContext(), "0", Toast.LENGTH_SHORT).show();
+//		}else if (tab.getPosition()==1){
+//			m.getActionBar().setTitle(m.getResources().getString(R.string.Riwayat));
+//			//Toast.makeText(m.getApplicationContext(), "1", Toast.LENGTH_SHORT).show();
+//		}else if(tab.getPosition()==2){
+//			m.getActionBar().setTitle(m.getResources().getString(R.string.Statistik));
+//			//Toast.makeText(m.getApplicationContext(), "2", Toast.LENGTH_SHORT).show();
+//		}
 	}
 
 	// When a tab is unselected, we have to hide it from the user's view.
