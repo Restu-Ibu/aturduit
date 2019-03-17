@@ -867,7 +867,7 @@ public class Util {
     }
 
     public static void removeOtherCategories(Context c, ImageView[] iv, int id) {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 7; i++) {
             if (i != id)
                 iv[i].setBackgroundColor(0);
         }
