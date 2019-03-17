@@ -25,6 +25,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
 }
 
 dependencies {
@@ -34,7 +39,8 @@ dependencies {
     // [END gradle_play_config]
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation files('libs/achartengine-1.0.0.jar')
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+//    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     implementation 'io.realm:realm-android:0.87.5'
 
     // Stetho core
@@ -57,3 +63,4 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+

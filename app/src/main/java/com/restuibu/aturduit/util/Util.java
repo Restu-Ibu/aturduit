@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,9 +87,11 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.restuibu.aturduit.activity.DashboardActivity;
 import com.restuibu.aturduit.activity.GoogleSignInActivity;
 import com.restuibu.aturduit.activity.HistoryAndStatisticBudgetActivity;
 import com.restuibu.aturduit.activity.TestActivity;
+import com.restuibu.aturduit.adapter.DashboardCategoryAdapter;
 import com.restuibu.aturduit.broadcast.NotificationPublisher;
 import com.restuibu.aturduit.fragment.AddTransactionFragment;
 import com.restuibu.aturduit.activity.MainActivity;
@@ -99,10 +102,12 @@ import com.restuibu.aturduit.adapter.OptionAdapter;
 import com.restuibu.aturduit.model.About;
 import com.restuibu.aturduit.model.Alarm;
 import com.restuibu.aturduit.model.Budget;
+import com.restuibu.aturduit.model.DashboardCategory;
 import com.restuibu.aturduit.model.MySQLiteHelper;
 import com.restuibu.aturduit.model.OptionItem;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.restuibu.aturduit.activity.DashboardActivity.button1;
 import static com.restuibu.aturduit.util.Constant.DATABASE_NAME;
 import static com.restuibu.aturduit.util.Constant.NOTIFICATION_CHANNEL_ID;
 import static com.restuibu.aturduit.util.Constant.NOTIFICATION_CHANNEL_NAME;
@@ -302,6 +307,42 @@ public class Util {
         alert.show();
     }
 
+    public static String parseDateCategory(String time) {
+        String inputPattern = "MM/yyyy";
+        String outputPattern = "MMM yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(time);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    public static String parseDateCategory2(String time) {
+        String inputPattern = "MMM yyyy";
+        String outputPattern = "MM/yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(time);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
     public static void loadAlarmList(Context c, ListView list) {
         MySQLiteHelper helper = new MySQLiteHelper(c);
         ArrayList<Alarm> alarms = helper.getAlarms();
@@ -324,6 +365,8 @@ public class Util {
         list.setAdapter(adapter);
 
     }
+
+
 
     public static void alertOptionBackup(final Context c) {
 
@@ -459,6 +502,19 @@ public class Util {
 
         return currency;
     }
+
+    public static String formatUang2(String nominal) {
+        //return currency;
+        Locale localeID = new Locale("in", "ID");
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(localeID);
+        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+        symbols.setCurrencySymbol("");
+        formatter.setDecimalFormatSymbols(symbols);
+
+        return formatter.format(Double.parseDouble(nominal));
+    }
+
+
 
     public static void refreshTimePickerAtAddTransactionFragment() {
         AddTransactionFragment.bTimePicker.setText(new SimpleDateFormat(
@@ -1078,4 +1134,74 @@ public class Util {
 
         return calendar.getTimeInMillis();
     }
+
+
+    public static void alertDashboardPeriod(final Context c){
+        LayoutInflater inflater = LayoutInflater.from(c);
+        View dialogview = inflater.inflate(
+                R.layout.alertdialog_list, null);
+        final AlertDialog alert = new AlertDialog.Builder(c)
+                .create();
+        alert.setTitle("Pilih Periode");
+        final ListView listView1 = (ListView) dialogview.findViewById(R.id.listView1);
+        final MySQLiteHelper helper = new MySQLiteHelper(c);
+
+        ArrayList<String> list = helper.getMonthsHistory();
+        list.add("Semua Periode");
+        for (int i=0; i<list.size(); i++){
+            if(i != list.size() - 1)
+                list.set(i, parseDateCategory(list.get(i)));
+        }
+
+        ArrayAdapter adapter = new ArrayAdapter(c,
+                android.R.layout.simple_list_item_1, list);
+        listView1.setAdapter(adapter);
+        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = (String) parent.getItemAtPosition(position);
+                DashboardActivity.button1.setText(selectedItem);
+
+                ArrayList<DashboardCategory> list;
+                if (!selectedItem.equals("Semua Periode")) {
+                    list = helper.getAllCategoriesByDate(parseDateCategory2(selectedItem));
+                }
+                else {
+                    list = helper.getAllCategories();
+                }
+
+                DashboardCategoryAdapter adapter = new DashboardCategoryAdapter(c, list);
+                DashboardActivity.lvCategory.setAdapter(adapter);
+                DashboardActivity.setData(c, list);
+
+                alert.dismiss();
+            }
+        });
+
+        alert.setView(dialogview);
+        alert.show();
+    }
+
+    public static int getCategoryIcon(Context context, String label){
+        int res = 0;
+
+        if (label.equals(context.getString(R.string.kategori1))) {
+            res = R.mipmap.ic_food;
+        } else if (label.equals(context.getString(R.string.kategori2))) {
+            res = R.mipmap.ic_transport;
+        } else if (label.equals(context.getString(R.string.kategori3))) {
+            res = R.mipmap.ic_entertain;
+        } else if (label.equals(context.getString(R.string.kategori4))) {
+            res = R.mipmap.ic_groceries;
+        } else if (label.equals(context.getString(R.string.kategori5))) {
+            res = R.mipmap.ic_others;
+        } else if (label.equals(context.getString(R.string.kategori6))) {
+            res = R.mipmap.ic_hutang;
+        } else if (label.equals(context.getString(R.string.kategori7))) {
+            res = R.mipmap.ic_zis;
+        }
+
+        return res;
+    }
+
 }

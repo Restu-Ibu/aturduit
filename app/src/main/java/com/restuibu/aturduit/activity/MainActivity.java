@@ -16,11 +16,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,6 +93,8 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
+
+
         // DB
         currentDB = new File(Environment.getDataDirectory(), "/data/" + getPackageName() + "/databases/"
                 + DATABASE_NAME);
@@ -103,14 +107,25 @@ public class MainActivity extends Activity {
         Intent intent = getIntent();
         fromSignIn = intent.getBooleanExtra("fromSignIn", false);
 
-        /*
-		 * // Screen handling while hiding ActionBar icon.
-		 * actionBar.setDisplayShowHomeEnabled(false);
-		 *
-		 * // Screen handling while hiding Actionbar title.
-		 * actionBar.setDisplayShowTitleEnabled(false);
-		 */
-
+        if (actionBar != null) {
+            // Disable the default and enable the custom
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            View customView = getLayoutInflater().inflate(R.layout.dashboard_actionbar, null);
+            // Get the textview of the title
+            TextView customTitle = (TextView) customView.findViewById(R.id.textView1);
+            // Change the font family (optional)
+            customTitle.setTypeface(Typeface.MONOSPACE);
+            // Set the on click listener for the title
+            customTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, DashboardActivity.class));
+                }
+            });
+            // Apply the custom view
+            actionBar.setCustomView(customView);
+        }
 
 
 

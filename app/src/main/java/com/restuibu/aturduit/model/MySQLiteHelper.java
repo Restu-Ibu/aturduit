@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -490,6 +491,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return history;
     }
 
+
+
     public ArrayList<History> getAllMonthlyHistory() {
         ArrayList<History> history = new ArrayList<History>();
         // 1. build the query
@@ -716,8 +719,90 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return alarms;
     }
 
+    // added 20190316
+    public ArrayList<String> getMonthsHistory(){
+        ArrayList<String> S = new ArrayList<String>();
 
+        // month = 03/2019
+        // 1. build the query
+        String query =
+                "select distinct substr(tanggal,4) " +
+                        "from tbl_transaksi " +
+                        "order by substr(tanggal,4) asc";
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build book and add it to list
+        String s = null;
+        if (cursor.moveToFirst()) {
+            do {
+                s = cursor.getString(0);
+                S.add(s);
+
+            } while (cursor.moveToNext());
+        }
+
+        return S;
+    }
+
+    public ArrayList<DashboardCategory> getAllCategories() {
+        ArrayList<DashboardCategory> S = new ArrayList<DashboardCategory>();
+
+        // month = 03/2019
+        // 1. build the query
+        String query =
+                "select kategori, avg(harga), min(harga), max(harga), sum(harga) " +
+                        "from tbl_transaksi " +
+                        "group by kategori " +
+                        "order by sum(harga) desc ";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build book and add it to list
+        DashboardCategory s = null;
+        if (cursor.moveToFirst()) {
+            do {
+                s = new DashboardCategory(cursor.getString(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3), cursor.getString(4));
+                S.add(s);
+
+            } while (cursor.moveToNext());
+        }
+
+        return S;
+    }
+
+    public ArrayList<DashboardCategory> getAllCategoriesByDate(String month) {
+        ArrayList<DashboardCategory> S = new ArrayList<DashboardCategory>();
+
+        // month = 03/2019
+        // 1. build the query
+        String query =
+                "select kategori, avg(harga), min(harga), max(harga), sum(harga) " +
+                        "from tbl_transaksi " +
+                        "where " +
+                        "substr(tanggal,4) = '"+month+"' " +
+                        "group by kategori " +
+                        "order by sum(harga) desc ";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build book and add it to list
+        DashboardCategory s = null;
+        if (cursor.moveToFirst()) {
+            do {
+                s = new DashboardCategory(cursor.getString(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3), cursor.getString(4));
+                S.add(s);
+
+            } while (cursor.moveToNext());
+        }
+
+        return S;
+    }
 
     @Override
     protected void finalize() throws Throwable {

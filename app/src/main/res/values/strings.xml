@@ -174,8 +174,8 @@ Semoga aplikasi ini bermanfaat.
     </string-array>
 
     <string name="title_activity_history_and_statistic_budget">HistoryAndStatisticBudgetActivity</string>
-    <string name="title_activity_about">AboutActivity</string>
-
+    <string name="title_activity_about">Tentang</string>
+    <string name="title_activity_dashboard">Dashboard</string>
     <string name="info_reference">Some icons made by Freepik from www.flaticon.com</string>
 
 

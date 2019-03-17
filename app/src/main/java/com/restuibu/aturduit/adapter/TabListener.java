@@ -7,6 +7,10 @@ import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.graphics.Typeface;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 public class TabListener implements ActionBar.TabListener {
 
@@ -25,6 +29,7 @@ public class TabListener implements ActionBar.TabListener {
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		ft.replace(R.id.frameLayout1, fragment);
 		m.getActionBar().setTitle("Dashboard");
+
 //		if(tab.getPosition()==0){
 //			m.getActionBar().setTitle(m.getResources().getString(R.string.Tambah));
 //			//Toast.makeText(m.getApplicationContext(), "0", Toast.LENGTH_SHORT).show();
